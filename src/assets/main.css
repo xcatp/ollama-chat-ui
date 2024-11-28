@@ -1,0 +1,25 @@
+@import './theme-light.css';
+@import './reset.css';
+@import './md.scss';
+
+.icon {
+  mask-repeat: no-repeat;
+  mask-position: center;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin: auto 4px auto 8px;
+}
+
+.dh {
+  height: 1000px;
+}
+
+.db {
+  border: 1px solid #5d5422;
+}
+
+.invisible {
+  visibility: hidden;
+  opacity: 0;
+}
