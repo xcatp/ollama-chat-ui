@@ -1,0 +1,66 @@
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import { local } from '@/utils/storage'
+import { useAgentStore } from './agentStore'
+
+export const useChatStore = defineStore('chat', () => {
+  const chatState = ref({
+    chatHistory: {}
+  })
+
+  _init()
+
+  const getHistory = (agentId) => {
+    if (!chatState.value.chatHistory[agentId]) {
+      chatState.value.chatHistory[agentId] = []
+    }
+    return chatState.value.chatHistory[agentId]
+  }
+
+  const addChat = (agentId, { inversion, text }) => {
+    if (!chatState.value.chatHistory[agentId]) {
+      chatState.value.chatHistory[agentId] = []
+    }
+    
+    chatState.value.chatHistory[agentId].push({
+      inversion,
+      text,
+      timestamp: new Date().toLocaleString()
+    })
+    
+    _recordState(agentId)
+  }
+  
+  const updateChat = (agentId, idx, text) => {
+    _recordState(agentId)
+  }
+
+  const removeChat = (agentId) => {
+    local.delItem(`chatHistory_${agentId}`)
+    chatState.value.chatHistory[agentId] = []
+    
+  }
+
+  function _init() {
+    const agentStore = useAgentStore()
+    const agentList = agentStore.agentState.agents
+    agentList.forEach(agent => {
+      const history = local.getItem(`chatHistory_${agent.id}`)
+      if (history) {
+        chatState.value.chatHistory[agent.id] = JSON.parse(history)
+      }
+    })
+  }
+
+  function _recordState(agentId) {
+    local.setItem(`chatHistory_${agentId}`, JSON.stringify(chatState.value.chatHistory[agentId]))
+  }
+
+  return {
+    chatState,
+    addChat,
+    getHistory,
+    updateChat,
+    removeChat
+  }
+})

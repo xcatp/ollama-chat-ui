@@ -1,10 +1,7 @@
 <script setup>
-
 import { onMounted, onUnmounted } from 'vue'
-import { useSiteStore } from './stores'
 
 onMounted(() => {
-  document.documentElement.dataset.theme = useSiteStore().getCurrTheme()
   document.addEventListener('click', flowerOnClick)
   onUnmounted(() => document.removeEventListener('click', flowerOnClick))
 

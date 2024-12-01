@@ -95,7 +95,6 @@ $pfx : #009152;
 }
 
 .x-p {
-  margin: 14px 0;
   line-height: 2em;
 }
 
@@ -124,7 +123,7 @@ $pfx : #009152;
 
 .x-pre {
   background-color: var(--bgc-pre) !important;
-  border: 1px solid var(--border-primary);
+  border-radius: 3px;
   padding: 0.5em;
   margin: 1em 0;
 }

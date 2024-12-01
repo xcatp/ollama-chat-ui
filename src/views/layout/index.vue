@@ -1,8 +1,6 @@
 <script setup>
-import { useSiteStore } from '@/stores'
 import { ref } from 'vue'
 import SiteOperation from '@/views/site/SiteOperation.vue'
-import SiteHeader from '@/views/site/SiteHeader.vue'
 
 const displayFixedMenu = ref(false)
 </script>
@@ -13,7 +11,6 @@ const displayFixedMenu = ref(false)
       <SiteOperation />
     </div>
     <div class="layout-container">
-      <!-- <SiteHeader /> -->
       <div class="main-wrapper">
         <RouterView />
       </div>
@@ -54,12 +51,12 @@ const displayFixedMenu = ref(false)
   flex: 1;
   display: flex;
   flex-direction: column;
+  background-image: var(--site-body-img), var(--site-body-linear);
 }
 
 .main-wrapper {
   height: 0;
   flex: 1;
-  background-image: var(--site-body-img), var(--site-body-linear);
 }
 
 .fixed-menu {

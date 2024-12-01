@@ -1,11 +1,13 @@
 <!--  -->
 <script setup>
+import ResizeBar from '@/components/ResizeBar.vue';
+import PopWindow from '@/components/PopWindow.vue';
 import { useRoute, useRouter } from 'vue-router'
 import { ref, onMounted, nextTick } from 'vue'
-import ResizeBarH from '@/components/ResizeBarH.vue';
 
 const route = useRoute()
 const router = useRouter()
+const settingDialogVisible = ref(false)
 
 onMounted(tryFindActiveShard)
 router.afterEach(() => tryFindActiveShard())
@@ -17,23 +19,27 @@ const dirs = ref([
     classNN: 'icon-chat',
     multi: false,
     path: '/chat'
-  },
-  {
+  }, {
     id: 1,
     title: 'Agents',
     classNN: 'icon-robot',
     multi: false,
     path: '/agent'
-  },
-  {
+  }, {
     id: 2,
-    title: 'Prompts',
-    classNN: 'icon-category',
+    title: 'Templates',
+    classNN: 'icon-prompt',
     multi: true,
     children: [
-      { id: 1, path: '/article/overview', title: '文章列表' },
-      { id: 2, path: '/article/create', title: '新建文章' },
+      { id: 1, path: '/templates/prompt', title: 'System prompts' },
+      { id: 2, path: '/templates/persona', title: 'Human personas' },
     ]
+  }, {
+    id: 3,
+    title: 'Info',
+    classNN: 'icon-storage',
+    multi: false,
+    path: '/info'
   }
 ])
 
@@ -66,23 +72,29 @@ function tryFindActiveShard() {
     if (!v.multi) {
       if (curr === v.path) {
         currentGroup.value = v.id
-        break
+        return
       }
     } else {
       const e = v.children.find(c => c.path === curr)
       if (e) {
         currentItem.value = v.id + '-' + e.id
         currentGroup.value = v.id
-        break
+        return
       }
     }
   }
+  currentGroup.value = '', currentItem.value = ''
 }
 
 </script>
 
 <template>
   <div class="view-container invisible-scrollbar">
+    <PopWindow :condition="settingDialogVisible" @close="settingDialogVisible = false">
+      <div class="pop-window-header">
+        <div class="title">Settings</div>
+      </div>
+    </PopWindow>
     <RouterLink to="/" class="emboss">
       <div class="emboss-title">Ollama-Chat</div>
       <div class="emboss-subtitle">ui</div>
@@ -118,13 +130,15 @@ function tryFindActiveShard() {
     <div class="sidebar-empty"></div>
     <div class="sidebar-bottom-fixed">
       <div class="bottom-left">
-        <div class="icon icon-robot"></div>
-        <div class="icon icon-robot"></div>
+        <div class="icon-container" @click="settingDialogVisible = true">
+          <div class="icon icon-setting"></div>
+        </div>
       </div>
       <div class="bottom-right">
       </div>
     </div>
-    <ResizeBarH></ResizeBarH>
+    <ResizeBar></ResizeBar>
+
   </div>
 </template>
 
@@ -134,7 +148,6 @@ function tryFindActiveShard() {
   flex-direction: column;
   position: sticky;
   top: 0;
-  z-index: 90;
   width: 220px;
   height: 100vh;
   overflow-y: auto;
@@ -144,6 +157,7 @@ function tryFindActiveShard() {
 }
 
 .emboss {
+  z-index: 110;
   min-height: 70px;
   padding: 10px;
   display: flex;
@@ -181,6 +195,21 @@ function tryFindActiveShard() {
 .icon-chat {
   background-color: #75972b;
   mask-image: url('/static/svg/chat.svg');
+}
+
+.icon-prompt {
+  background-color: #75972b;
+  mask-image: url('/static/svg/prompt.svg');
+}
+
+.icon-setting {
+  background-color: #75972b;
+  mask-image: url('/static/svg/setting.svg');
+}
+
+.icon-storage {
+  background-color: #75972b;
+  mask-image: url('/static/svg/storage.svg');
 }
 
 .menu-wrapper {
@@ -326,9 +355,26 @@ function tryFindActiveShard() {
   .bottom-left {
     display: flex;
     flex-direction: column;
-    gap: 3em;
+    justify-content: flex-end;
+    gap: 20px;
     margin-left: 10px;
-    margin-bottom: 2em;
+    margin-bottom: 10px;
+
+    .icon-container {
+      display: flex;
+      align-items: center;
+      justify-self: center;
+      border-radius: 10%;
+      transition: background-color 0.15s linear;
+
+      &:hover {
+        background-color: rgb(182, 210, 178);
+      }
+
+      &>div {
+        margin: 5px;
+      }
+    }
   }
 
   .bottom-right {

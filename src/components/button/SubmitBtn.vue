@@ -6,12 +6,13 @@
 
 <style scoped lang="scss">
 .button {
-  padding: 4px 11px;
   font-size: 14px;
   line-height: 1.5;
-  color: inherit;
+  height: 25px;
+  padding: 2px 11px;
   border-radius: 2px;
   cursor: pointer;
+  color: var(--text-02);
 }
 
 .submit-btn {
