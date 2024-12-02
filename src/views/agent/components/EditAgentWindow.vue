@@ -1,0 +1,34 @@
+<!--  -->
+<script setup>
+import PopWindow from '@/components/PopWindow.vue'
+defineProps(['form', 'models', 'prompts', 'condition'])
+defineEmits(['close', 'submit'])
+</script>
+
+<template>
+  <PopWindow :condition="condition" @close="$emit('close')">
+    <div class="pop-window-header">
+      <h2 class="title">Edit Agent</h2>
+    </div>
+    <div class="pop-window-body">
+      <div class="label">Agent name <span class="desc">required</span></div>
+      <input type="text" v-model="form.name" placeholder="Agent name" />
+      <div class="label">Agent persona</div>
+      <el-select v-model="form.prompt" clearable placeholder="please select your zone">
+        <el-option v-for="v in prompts" :key="v.key" :label="v.key" :value="v.value" />
+      </el-select>
+      <div class="label">Human persona</div>
+      <el-select v-model="form.persona" placeholder="please select your zone">
+      </el-select>
+    </div>
+    <div class="pop-window-footer">
+      <div class="form-btn">
+        <SubmitBtn @click="$emit('submit')">Done</SubmitBtn>
+      </div>
+    </div>
+  </PopWindow>
+</template>
+
+<style scoped lang="scss">
+@import url('./style.scss');
+</style>

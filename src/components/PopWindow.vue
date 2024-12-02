@@ -45,12 +45,12 @@ defineProps({ condition: Boolean })
   transform: translate(-50%, -50%);
   border-radius: 4px;
   width: 800px;
-  height: 800px;
+  min-height: 400px;
   max-width: 80%;
   max-height: 80%;
-  background-color: #e9eced;
+  background-color: #edece9;
   box-shadow: 0px 0px 6px rgba(60, 83, 54, 0.67);
-  transition: all 0.15s ease-out;
+  transition: all 0.1s ease-out;
 }
 
 .icon-close {

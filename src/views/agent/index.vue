@@ -1,37 +1,35 @@
 <!--  -->
 <script setup>
-import PopWindow from '@/components/PopWindow.vue'
-import SimpleInput from '@/components/SimpleInput.vue'
 import useCreateAgent from './composable/useCreateAgent'
 import useModelInfo from './composable/useModelInfo'
 import useAgentInfo from './composable/useAgentInfo'
 import useDelAgent from './composable/useDelAgent'
 import moment from 'moment'
-import { useSiteStore } from '@/stores'
+import { useSiteStore, useTemplateStore } from '@/stores'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import DataTable from '@/components/DataTable.vue'
 import { ElMessage } from 'element-plus'
+import DataTable from '@/components/DataTable.vue'
+import SubmitBtn from '@/components/button/SubmitBtn.vue'
+import CreateAgentWindow from './components/CreateAgentWindow.vue'
+import EditAgentWindow from './components/EditAgentWindow.vue'
 
 const router = useRouter()
 const siteStore = useSiteStore()
 const loading = ref(false)
 const createAgentDialogVisible = ref(false)
+const editAgentDialogVisible = ref(false)
 const pageSize = 10
 const currPage = ref(1)
 const { models } = useModelInfo()
 const { agentList, total, getPageData } = useAgentInfo(currPage.value, pageSize)
+const prompts = useTemplateStore().templateState.prompts
 const form = ref({
   name: '',
   model: '',
   prompt: '',
   persona: ''
 })
-
-const rules = {
-  name: [{ required: true, message: 'Please input name', trigger: 'blur' }],
-  model: [{ required: true, message: 'Please select a model', trigger: 'change' }]
-}
 
 function chat(agentId) {
   siteStore.setActiveAgentId(agentId)
@@ -40,8 +38,6 @@ function chat(agentId) {
 
 function delAgent(agentId) {
   useDelAgent(agentId)
-  console.log('deleted agent:' + agentId);
-
   retrieveNextPage(currPage.value)
 }
 
@@ -58,6 +54,9 @@ function createAgent() {
   createAgentDialogVisible.value = false
   retrieveNextPage(currPage.value)
 }
+function editAgent() {
+  
+}
 
 function retrieveNextPage(v) {
   loading.value = true
@@ -69,32 +68,10 @@ function retrieveNextPage(v) {
 
 <template>
   <div class="view-container">
-    <PopWindow :condition="createAgentDialogVisible" @close="createAgentDialogVisible = false">
-      <div class="pop-window-header">
-        <h2 class="title">Create Agent</h2>
-      </div>
-      <div class="pop-window-body">
-        <div class="label">Agent name</div>
-        <input type="text" v-model="form.name" placeholder="Agent name" />
-        <div class="label">Model</div>
-        <el-select v-model="form.model" clearable placeholder="select a model">
-          <el-option v-for="v in models" :key="v.name" :label="v.name" :value="v.name" />
-        </el-select>
-        <div class="label">Agent persona</div>
-        <el-select v-model="form.prompt" clearable placeholder="please select your zone">
-          <el-option label="Zone one" value="shanghai" />
-        </el-select>
-        <div class="label">Human persona</div>
-        <el-select v-model="form.persona" placeholder="please select your zone">
-        </el-select>
-      </div>
-      <div class="pop-window-footer">
-        <div class="form-btn">
-          <el-button type="primary" @click="createAgent">Create</el-button>
-          <el-button @click="createAgentDialogVisible = false">Cancel</el-button>
-        </div>
-      </div>
-    </PopWindow>
+    <CreateAgentWindow :condition="createAgentDialogVisible" :form="form" :models="models" :prompts="prompts"
+      @submit="createAgent" @close="createAgentDialogVisible = false" />
+    <EditAgentWindow :condition="editAgentDialogVisible" :form="form" :prompts="prompts" 
+      @submit="editAgent" @close="editAgentDialogVisible = false" />
     <div class="header-panel">
       <div class="title">Agents</div>
       <SubmitBtn @click="createAgentDialogVisible = true">New</SubmitBtn>
@@ -116,12 +93,23 @@ function retrieveNextPage(v) {
             <td>{{ v.agentName }}</td>
             <td>{{ v.model }}</td>
             <td>{{ v.chatCount }}</td>
-            <td>{{ v.lastRun ? moment(v.lastRun).format('YYYY-MM-DD HH:mm:ss') : 'Never' }}</td>
-            <td>{{ moment(v.lifespan).format('YYYY-MM-DD HH:mm:ss') }}</td>
+            <td>{{ v.lastRun || 'Never' }}</td>
+            <td>{{ moment(v.lifespan).format('YYYY/MM/DD HH:mm:ss') }}</td>
             <td class="op-col">
               <div class="op-container">
-                <div class="icon icon-edit" @click="chat(v.id)"></div>
-                <div class="icon icon-delete" @click="delAgent(v.id)"></div>
+                <SubmitBtn class="chat-btn" @click="chat(v.id)">chat</SubmitBtn>
+                <div class="icon icon-edit" @click="editAgentDialogVisible = true"></div>
+                <el-popconfirm width="220" title="Are you sure to delete this?">
+                  <template #reference>
+                    <div class="icon icon-delete"></div>
+                  </template>
+                  <template #actions="{ cancel }">
+                    <el-button size="small" @click="cancel">No</el-button>
+                    <el-button type="danger" size="small" @click="delAgent(v.id)">
+                      Yes
+                    </el-button>
+                  </template>
+                </el-popconfirm>
               </div>
             </td>
           </tr>
@@ -158,36 +146,12 @@ function retrieveNextPage(v) {
   font-size: 1.5rem;
   font-weight: 600;
   line-height: 2rem;
-}
 
-
-.pop-window-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 2em;
-}
-
-.pop-window-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-
-  .form-btn {
-    display: flex;
-    margin-top: auto;
-    justify-content: flex-end !important;
-  }
-
-  input {
-    outline: none;
-    padding: 4px 11px;
-    font-size: 14px;
-    line-height: 1.5;
-    color: inherit;
-    border: 1px solid #E2E4E5;
-    background-color: #E2E4E5;
-    border-radius: 2px;
+  .title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 2rem;
+    color: var(--text-03);
   }
 }
 
@@ -214,6 +178,11 @@ function retrieveNextPage(v) {
     justify-content: center;
     gap: 10px;
     align-items: center;
+
+    .chat-btn {
+      padding: 0 5px;
+      border-radius: 3px;
+    }
 
     &>div {
       cursor: pointer;

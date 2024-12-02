@@ -3,48 +3,41 @@
 import SubmitBtn from '@/components/button/SubmitBtn.vue'
 import ResizeBar from '@/components/ResizeBar.vue'
 import HoverMenu from '@/components/HoverMenu.vue'
-import { useSiteStore, useAgentStore, useChatStore } from '@/stores'
-import { nextTick, onMounted, onUpdated, ref } from 'vue'
+import PromptInfo from '../template/components/PromptInfo.vue'
+import { useChatStore, useSiteStore } from '@/stores'
+import { nextTick, onMounted, ref } from 'vue'
 import { useScroll } from '@/hooks/useScroll'
 import { local } from '@/utils/storage'
-import { chat } from '@/api/ollama'
+import { chat, abort } from '@/api/ollama'
 import { render } from '@/utils/markdown'
+import { ElMessage } from 'element-plus'
+import moment from 'moment'
 import useEvent from './hooks/useEvent'
+import useActiveAgentInfo from './composable/useActiveAgentInfo'
+import useChatHistory from './composable/useChatHistory'
+import useTemplateInfo from './composable/useTemplateInfo'
 
 const input = defineModel()
-const siteStore = useSiteStore()
-const agentStore = useAgentStore()
 const chatStore = useChatStore()
-const agentInfo = ref(null)
+const siteStore = useSiteStore()
 const leftPanel = ref(null)
-const chatHistory = ref([])
+const thinking = ref(false)
+const sending = ref(false)
+const agentInfo = useActiveAgentInfo()
+const chatHistory = useChatHistory(agentInfo.value.id)
+const { prompt } = useTemplateInfo(agentInfo.value.prompt)
 const { scrollRef, scrollToBottom } = useScroll()
+const detailWindowVisible = ref(null)
 
 useEvent()
 
-onMounted(() => {
-  getModelInfo()
-  getChatHistory()
-  scrollToBottom()
-
-  function getModelInfo() {
-    const agentId = siteStore.siteState.activeAgentId
-    if (!agentId) {
-      console.log('default');
-
-    } else {
-      agentInfo.value = agentStore.agentState.agents.find(item => item.id === agentId)
-      nextTick(() => leftPanel.value.style.width = local.getItem('chatBarW'))
-    }
-  }
-
-  function getChatHistory() {
-    if (agentInfo.value) {
-      chatHistory.value = chatStore.getHistory(agentInfo.value.id)
-    }
+onMounted(async () => {
+  if (agentInfo.value) {
+    await nextTick()
+    leftPanel.value.style.width = local.getItem('chatBarW')
+    scrollToBottom()
   }
 })
-
 
 function addUserChat(msg) {
   const userChat = {
@@ -63,8 +56,6 @@ function addEmptyBotChat() {
   chatHistory.value.push(botChat) // Will not save immediately
 }
 
-const sending = ref(false)
-
 async function SubmitChat() {
   if (sending.value) return
   const userMsg = input.value
@@ -74,13 +65,79 @@ async function SubmitChat() {
   addUserChat(userMsg)
   addEmptyBotChat()
   scrollToBottom()
+  _chat(userMsg, -1)
+}
 
-  const res = await chat(agentInfo.value.model, userMsg)
-  for await (const part of res) {
-    chatHistory.value[chatHistory.value.length - 1].text += part.message.content
+function reGenerate(idx) {
+  if (sending.value || idx < 1)
+    return
+  const userChat = chatHistory.value[idx - 1]
+  if (userChat.inversion) {
+    ElMessage({
+      message: 'Chat has been deleted.',
+      type: 'warning',
+    })
+    return
   }
-  chatStore.updateChat(agentInfo.value.id)
-  sending.value = false
+  _chat(userChat.text, idx)
+}
+
+function delChat(idx) {
+  if (sending.value || idx < 0)
+    return
+  chatStore.removeChatItem(agentInfo.value.id, idx)
+  ElMessage({
+    message: 'Chat has been deleted.',
+    type: 'success',
+  })
+}
+
+function botThinking(idx) {
+  const thinkingText = ['⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏', '⠋', '⠙', '⠹']
+  let i = 0
+  thinking.value = true
+  const loadingInterval = setInterval(() => {
+    chatHistory.value.at(idx).text = thinkingText[i]
+    i = (i + 1) % thinkingText.length
+  }, 100);
+  return () => {
+    clearInterval(loadingInterval)
+    chatHistory.value.at(idx).text = ''
+    thinking.value = false
+  }
+}
+
+function _chat(userMsg, idx) {
+  const thinkingDone = botThinking(idx)
+
+  chat(agentInfo.value.model, userMsg).then(async stream => {
+    thinkingDone()
+    for await (const part of stream) {
+      chatHistory.value.at(idx).text += part.message.content
+    }
+    chatStore.updateChat(agentInfo.value.id)
+    sending.value = false
+  }).catch(error => {
+    thinkingDone()
+    if (error.name === 'AbortError') {
+      chatHistory.value.at(idx).text = '[Request have been aborted.]'
+    } else {
+      chatHistory.value.at(idx).text = '[Request failed.]'
+    }
+    chatStore.updateChat(agentInfo.value.id)
+    sending.value = false
+  })
+}
+
+function handleCopy() {
+  ElMessage({
+    message: 'Copied.',
+    type: 'success',
+  })
+}
+
+function modifyPrompt() {
+  
 }
 
 function inputKeyDown(e) {
@@ -89,14 +146,13 @@ function inputKeyDown(e) {
     SubmitChat()
   }
 }
-
 </script>
 
 <template>
   <div class="view-container">
-
+    <PromptInfo :condition="detailWindowVisible" :form="prompt" @submit="modifyPrompt"
+      @close="detailWindowVisible = false" />
     <div class="header-panel">
-
       <div class="title">
         Chat with {{ agentInfo?.agentName || '?' }}
       </div>
@@ -106,18 +162,28 @@ function inputKeyDown(e) {
       <div class="empty-panel">
         <div class="empty-text">Please select an agent to start chatting.</div>
         <RouterLink to="/agent">
-          <button>
-            select
-          </button>
+          <SubmitBtn class="select-btn">Select</SubmitBtn>
         </RouterLink>
       </div>
     </div>
     <div v-else class="main-panel">
-
       <div class="left-panel" ref="leftPanel">
         <div class="model-info">
-          <div class="model-name">Llama3.2</div>
-          <div class="info-item">model: {{ agentInfo.model }}</div>
+          <div class="info-item">
+            <div class="label">MODEL</div>
+            <span class="desc">{{ agentInfo.model }}</span>
+          </div>
+          <div class="info-item">
+            <div class="label">LIFESPAN</div>
+            <span class="desc">{{ moment(agentInfo.lifespan).format('YYYY-MM-DD') }}</span>
+          </div>
+          <div class="info-item">
+            <div style="display: flex; align-items: center;">
+              <span class="label">PROMPT</span>
+              <div @click="detailWindowVisible = true" class="icon icon-pen"></div>
+            </div>
+            <span class="desc">{{ agentInfo.prompt || 'null' }}</span>
+          </div>
         </div>
         <ResizeBar :min="0" @end="(w) => siteStore.setChatBarW(w)"></ResizeBar>
       </div>
@@ -130,12 +196,15 @@ function inputKeyDown(e) {
             </div>
             <div class="msg-container">
               <div class="msg-content" v-html="render(v.text)"></div>
-              <HoverMenu>
-                <ul>
-                  <li class="dropdown-item">Copy</li>
-                  <li class="dropdown-item">Delete</li>
-                </ul>
-              </HoverMenu>
+              <div class="msg-operation">
+                <div v-if="v.inversion" title="Refresh" @click="reGenerate(i)" class="icon icon-refresh"></div>
+                <HoverMenu>
+                  <ul>
+                    <li class="dropdown-item">Copy</li>
+                    <li class="dropdown-item" @click="delChat(i)">Delete</li>
+                  </ul>
+                </HoverMenu>
+              </div>
             </div>
           </div>
         </div>
@@ -144,6 +213,7 @@ function inputKeyDown(e) {
           <textarea class="edit-input" @keydown="inputKeyDown" v-model="input"
             placeholder="Type your message"></textarea>
           <SubmitBtn :onclick="SubmitChat" class="submit-btn">Send</SubmitBtn>
+          <SubmitBtn v-if="sending" class="stop-btn" @click="abort">Stop</SubmitBtn>
         </div>
       </div>
     </div>
@@ -188,6 +258,19 @@ function inputKeyDown(e) {
   display: flex;
   background-color: rgb(235, 242, 232);
   overflow-y: auto;
+
+  .empty-panel {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+
+    .select-btn {
+      display: block;
+    }
+  }
 }
 
 .left-panel {
@@ -202,17 +285,20 @@ function inputKeyDown(e) {
     overflow-x: hidden;
     width: 100%;
 
-    .model-name {
-      font-size: 1.5rem;
-      font-weight: 600;
-      line-height: 2rem;
+    .info-item {
+      margin-bottom: 1em;
     }
 
-    .model-description {
+    .label {
+      font-weight: 400;
+      color: var(--text-02);
+    }
+
+    .desc {
       font-size: 0.8rem;
       font-weight: 400;
       line-height: 1rem;
-      color: #999;
+      color: #718370;
     }
   }
 }
@@ -251,6 +337,13 @@ function inputKeyDown(e) {
       right: 10px;
       bottom: 10px;
     }
+
+    .stop-btn {
+      position: absolute;
+      right: 50%;
+      bottom: 120%;
+      transform: translateX(50%);
+    }
   }
 }
 
@@ -277,7 +370,7 @@ function inputKeyDown(e) {
     }
 
     .msg-content {
-      background-color: #d1e7dd;
+      background-color: #f0f6ea !important;
     }
   }
 
@@ -302,6 +395,10 @@ function inputKeyDown(e) {
       border-radius: 5px;
     }
 
+    .msg-operation {
+      margin-top: auto;
+    }
+
     .dropdown-item {
       transition: background-color .1s ease-out;
       padding: 5px 10px;
@@ -310,7 +407,6 @@ function inputKeyDown(e) {
       &:hover {
         background-color: #84c99b;
       }
-
     }
   }
 
@@ -330,5 +426,28 @@ function inputKeyDown(e) {
   margin: 5px;
   background-color: #426000;
   mask-image: url('/static/svg/robot.svg');
+}
+
+.icon-pen {
+  width: 15px;
+  height: 15px;
+  background-color: #426000;
+  mask-image: url('/static/svg/pen.svg');
+
+  &:hover {
+    background-color: rgb(0, 56, 7);
+  }
+}
+
+.icon-refresh {
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  background-color: #748059;
+  mask-image: url('/static/svg/refresh.svg');
+
+  &:hover {
+    background-color: rgb(0, 53, 7);
+  }
 }
 </style>

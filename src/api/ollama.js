@@ -32,5 +32,7 @@ export function listModels() {
   return ollama.list()
 }
 
-
+export function abort() {
+  ollama.abort()
+}
 

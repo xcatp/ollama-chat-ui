@@ -9,3 +9,4 @@ export default pinia
 export * from './modules/siteStore'
 export * from './modules/chatStore'
 export * from './modules/agentStore'
+export * from './modules/templateStore'

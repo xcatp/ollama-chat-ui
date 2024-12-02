@@ -1,21 +1,16 @@
-import { ref, onMounted } from "vue"
-import { local } from "@/utils/storage"
-import { useAgentStore } from "@/stores"
+import { ref } from "vue"
+import { useChatStore } from "@/stores"
 
-export default function useActiveAgentIfno(id) {
+export default function useChatHistory(agentId) {
 
-  const agentInfo = ref([])
-  const agentStore = useAgentStore()
-
-  onMounted(() => getFromLocal())
+  const chatHistory = ref([])
+  const chatStore = useChatStore()
+  if (!agentId) return
+  getFromLocal()
 
   function getFromLocal() {
-    if(agentStore.agentState.agents.length > 0) {
-      agentInfo.value = agentStore.agentState.agents.find(agent => agent.id === id)
-    }
+    chatHistory.value = chatStore.getHistory(agentId)
   }
 
-  return {
-    agentInfo
-  }
+  return chatHistory
 }

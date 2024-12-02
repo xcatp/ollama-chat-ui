@@ -1,5 +1,5 @@
 import { ref } from "vue"
-import { useAgentStore } from "@/stores"
+import { useAgentStore, useChatStore } from "@/stores"
 
 export default function useAgentInfo(currPage, pageSize) {
 
@@ -10,7 +10,13 @@ export default function useAgentInfo(currPage, pageSize) {
 
   function getFromLocal(p, s) {
     const agentStore = useAgentStore()
+    const chatStore = useChatStore()
     agentList.value = agentStore.agentState.agents.slice((p - 1) * s, p * s)
+    agentList.value.forEach(v => {
+      if(!chatStore.chatState.chatHistory[v.id]) return
+      v.chatCount = chatStore.chatState.chatHistory[v.id].length
+      v.lastRun = chatStore.chatState.chatHistory[v.id].at(-1)?.timestamp || ''
+    })
     total.value = agentStore.agentState.agents.length
   }
 

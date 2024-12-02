@@ -38,7 +38,11 @@ export const useChatStore = defineStore('chat', () => {
   const removeChat = (agentId) => {
     local.delItem(`chatHistory_${agentId}`)
     chatState.value.chatHistory[agentId] = []
-    
+  }
+
+  const removeChatItem = (agentId, idx) => {
+    chatState.value.chatHistory[agentId].splice(idx, 1)
+    _recordState(agentId)
   }
 
   function _init() {
@@ -61,6 +65,7 @@ export const useChatStore = defineStore('chat', () => {
     addChat,
     getHistory,
     updateChat,
-    removeChat
+    removeChat,
+    removeChatItem
   }
 })

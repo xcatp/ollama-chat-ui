@@ -1,42 +1,99 @@
 <!--  -->
 <script setup>
 import { ref } from 'vue'
-import PopWindow from '@/components/PopWindow.vue'
 import SubmitBtn from '@/components/button/SubmitBtn.vue'
 import DataTable from '@/components/DataTable.vue'
+import PromptInfo from './components/PromptInfo.vue'
+import usePromptInfo from './composable/usePromptInfo'
+import useCreatePrompt from './composable/useCreatePrompt'
+import useUpdatePrompt from './composable/useUpdatePrompt'
+import useDelPrompt from './composable/useDelPrompt'
+import { ElMessage } from 'element-plus'
 
 const loading = ref(false)
-const total = ref(0)
 const pageSize = 10
 const currPage = ref(1)
+const isEdit = ref(false)
 const popWindowVisible = ref(false)
-const prompts = ref([])
+const { promptList, total, getPageData } = usePromptInfo(currPage.value, pageSize)
 const form = ref({
-  name: '',
+  key: '',
   value: ''
 })
+
+function handleEdit(key, value) {
+  form.value = {
+    key, value
+  }
+  popWindowVisible.value = true
+  isEdit.value = true
+}
+
+function handleAdd() {
+  form.value = {
+    key: '',
+    value: ''
+  }
+  popWindowVisible.value = true
+  isEdit.value = false
+}
+
+function handleDel(key) {
+  useDelPrompt(key)
+  retrieveNextPage(currPage.value)
+}
+
+function submit() {
+  if (!form.value.key || !form.value.value) {
+    ElMessage({
+      message: 'Please fill in the form',
+      type: 'error'
+    })
+    return
+  }
+
+  if (isEdit.value) {
+    useUpdatePrompt(form.value).then(() => {
+      form.value = {
+        key: '',
+        value: ''
+      }
+      popWindowVisible.value = false
+      retrieveNextPage(currPage.value)
+      isEdit.value = false
+    }).catch(() => ElMessage({
+      message: 'Nonexistent key',
+      type: 'error'
+    }))
+  } else {
+    useCreatePrompt(form.value).then(() => {
+      form.value = {
+        key: '',
+        value: ''
+      }
+      popWindowVisible.value = false
+      retrieveNextPage(currPage.value)
+    }).catch(() => ElMessage({
+      message: 'Duplicate key',
+      type: 'error'
+    }))
+  }
+}
+
+function retrieveNextPage(v) {
+  loading.value = true
+  currPage.value = v
+  getPageData(v, pageSize)
+  loading.value = false
+}
 </script>
 
 <template>
   <div class="view-container">
-    <PopWindow :condition="popWindowVisible" @close="popWindowVisible = false">
-      <div class="pop-window-header">
-        <h2 class="title">Prompt template</h2>
-      </div>
-      <div class="pop-window-body">
-        <div class="label">Name</div>
-        <input type="text" v-model="form.name" placeholder="Name" />
-        <div class="label">Value</div>
-        <textarea v-model="form.value" placeholder="Value"></textarea>
-      </div>
-      <div class="pop-window-footer">
-        <SubmitBtn @click="popWindowVisible = false">Done</SubmitBtn>
-      </div>
-    </PopWindow>
-
+    <PromptInfo :condition="popWindowVisible" :form="form" @submit="submit" @close="popWindowVisible = false" />
     <div class="header-panel">
       <div class="title">System Prompts</div>
-      <SubmitBtn @click="popWindowVisible = true">New</SubmitBtn>
+      <SubmitBtn @click="handleAdd">New</SubmitBtn>
     </div>
     <div class="main-panel">
       <DataTable :loading="loading">
@@ -44,12 +101,12 @@ const form = ref({
           <th style="width: 4em;">#</th>
           <th>Name</th>
           <th>Value</th>
-          <th style="width: 8em;">Op</th>
+          <th style="width: 8em;"></th>
         </template>
         <template #body>
-          <tr v-for="(v, i) in prompts" :key="v.id">
-            <td class="id-col">{{ i + 1 }}</td>
-            <td>{{ v.name }}</td>
+          <tr v-for="(v, i) in promptList" :key="v.key">
+            <td class="id-col">{{ i + 1 + (currPage - 1) * pageSize }}</td>
+            <td>{{ v.key }}</td>
             <td>
               <el-popover :width="300" popper-style="background: #f4f7f1;padding: 20px;">
                 <template #reference>
@@ -62,15 +119,15 @@ const form = ref({
             </td>
             <td class="op-col">
               <div class="op-container">
-                <div class="icon icon-edit" @click="popWindowVisible = true"></div>
-                <el-popconfirm width="220" title="Are you sure to delete this?" @cancel="onCancel">
+                <div class="icon icon-edit" @click="handleEdit(v.key, v.value)"></div>
+                <el-popconfirm width="220" title="Are you sure to delete this?">
                   <template #reference>
                     <div class="icon icon-delete"></div>
                   </template>
-                  <template #actions="{ confirm, cancel }">
-                    <el-button size="small" @click="cancel">No!</el-button>
-                    <el-button type="danger" size="small" @click="confirm">
-                      Yes?
+                  <template #actions="{ cancel }">
+                    <el-button size="small" @click="cancel">No</el-button>
+                    <el-button type="danger" size="small" @click="handleDel(v.key)">
+                      Yes
                     </el-button>
                   </template>
                 </el-popconfirm>
@@ -125,6 +182,11 @@ const form = ref({
 
   .label {
     font-size: 1.2rem;
+
+    .desc {
+      font-size: 0.8rem;
+      color: #979797;
+    }
   }
 
   input,

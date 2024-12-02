@@ -94,6 +94,7 @@ function registerResizeEvent() {
   cursor: ew-resize;
   left: 0;
   top: 50%;
+  transform: translateY(-50%);
   width: 10px;
   height: 20px;
   mask-image: url('/static/svg/resizeBtnH.svg');
@@ -103,6 +104,7 @@ function registerResizeEvent() {
   cursor: ew-resize;
   right: 0;
   top: 50%;
+  transform: translateY(-50%);
   width: 10px;
   height: 20px;
   mask-image: url('/static/svg/resizeBtnH.svg');
@@ -112,6 +114,7 @@ function registerResizeEvent() {
   cursor: ns-resize;
   top: 0;
   left: 50%;
+  transform: translateX(-50%);
   width: 20px;
   height: 10px;
   mask-image: url('/static/svg/resizeBtnV.svg');
@@ -121,6 +124,7 @@ function registerResizeEvent() {
   cursor: ns-resize;
   bottom: 0;
   left: 50%;
+  transform: translateX(-50%);
   width: 20px;
   height: 10px;
   mask-image: url('/static/svg/resizeBtnV.svg');

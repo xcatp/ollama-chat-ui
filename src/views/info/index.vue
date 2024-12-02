@@ -24,7 +24,7 @@ onMounted(async () => {
       <div class="title">Information</div>
     </div>
     <div class="main-panel">
-      <h1>Available Models ({{ total }})</h1>
+      <h1>Available Models</h1>
       <DataTable :loading="loading">
         <template #header>
           <th style="width: 2em;">#</th>

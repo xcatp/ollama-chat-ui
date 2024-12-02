@@ -10,6 +10,17 @@
         <div class="main-title">Ollama Chat</div>
         <div class="main-subtitle">chat with local LLM</div>
       </div>
+      <div class="main-body">
+        <RouterLink to="/chat">
+          <SubmitBtn class="select-btn">Start Chatting!</SubmitBtn>
+        </RouterLink>
+      </div>
+      <div class="main-footer">
+        <div class="footer-text">
+          2024 ©
+          <a href="">xcatp</a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -76,5 +87,27 @@
   letter-spacing: 0.100rem;
   margin: auto;
   width: max-content;
+}
+
+.main-body {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+
+  .select-btn {
+    display: block;
+  }
+}
+
+.main-footer {
+  color: #b5c4b8;
+  margin-left: auto;
+
+  a:hover {
+    color: rgb(255, 132, 0);
+  }
 }
 </style>
