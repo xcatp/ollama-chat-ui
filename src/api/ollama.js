@@ -1,4 +1,4 @@
-import { Ollama } from 'ollama'
+import { Ollama } from 'ollama/browser'
 
 const ollama = new Ollama({ host: 'http://127.0.0.1:11434' })
 

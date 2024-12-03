@@ -47,7 +47,7 @@ export const useAgentStore = defineStore('agent', () => {
   }
 
   function _init() {
-    agentState.value.agents = JSON.parse(local.getItem('agents'))
+    agentState.value.agents = JSON.parse(local.getItem('agents')) || []
   }
 
   function _recordState() {

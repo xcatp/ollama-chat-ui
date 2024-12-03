@@ -3,13 +3,13 @@ import { useAgentStore, useSiteStore } from "@/stores"
 
 export default function useActiveAgentInfo() {
 
-  const agentInfo = ref([])
+  const agentInfo = ref(null)
   const siteStore = useSiteStore()
   const agentStore = useAgentStore()
   const id = siteStore.siteState.activeAgentId
   if (!id) {
     siteStore.setActiveAgentId('')
-    return
+    return agentInfo
   }
   getFromLocal(id)
 
