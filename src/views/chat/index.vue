@@ -4,28 +4,30 @@ import SubmitBtn from '@/components/button/SubmitBtn.vue'
 import ResizeBar from '@/components/ResizeBar.vue'
 import HoverMenu from '@/components/HoverMenu.vue'
 import PromptInfo from '../template/components/PromptInfo.vue'
-import { useChatStore, useSiteStore } from '@/stores'
+import { useChatStore, useSiteStore, useAgentStore } from '@/stores'
 import { nextTick, onMounted, ref } from 'vue'
 import { useScroll } from '@/hooks/useScroll'
 import { local } from '@/utils/storage'
-import { chat, abort } from '@/api/ollama'
+import { chatWithHistory, abort } from '@/api/ollama'
 import { render } from '@/utils/markdown'
 import { ElMessage } from 'element-plus'
 import moment from 'moment'
 import useEvent from './hooks/useEvent'
 import useActiveAgentInfo from './composable/useActiveAgentInfo'
 import useChatHistory from './composable/useChatHistory'
-import useTemplateInfo from './composable/useTemplateInfo'
+import getChatHistory from './helper'
+import { useTemplateInfo, updateTemplateInfo } from './composable/useTemplateInfo'
 
 const input = defineModel()
 const chatStore = useChatStore()
+const agentStore = useAgentStore()
 const siteStore = useSiteStore()
 const leftPanel = ref(null)
 const thinking = ref(false)
 const sending = ref(false)
 const agentInfo = useActiveAgentInfo()
 const chatHistory = useChatHistory(agentInfo.value.id)
-const { prompt } = useTemplateInfo(agentInfo.value.prompt)
+const { prompt } = useTemplateInfo(agentInfo.value.agentPersona)
 const { scrollRef, scrollToBottom } = useScroll()
 const detailWindowVisible = ref(null)
 
@@ -51,7 +53,7 @@ function addEmptyBotChat() {
   const botChat = {
     inversion: true,
     text: '',
-    timestamp: new Date().toLocaleString()
+    timestamp: new Date().toISOString()
   }
   chatHistory.value.push(botChat) // Will not save immediately
 }
@@ -62,10 +64,11 @@ async function SubmitChat() {
   if (!userMsg || userMsg.trim() === '') return
   sending.value = true, input.value = ''
 
+  const history = getChatHistory(chatHistory.value, chatHistory.value.length)
   addUserChat(userMsg)
   addEmptyBotChat()
   scrollToBottom()
-  _chat(userMsg, -1)
+  _chat(userMsg, -1, history)
 }
 
 function reGenerate(idx) {
@@ -79,7 +82,8 @@ function reGenerate(idx) {
     })
     return
   }
-  _chat(userChat.text, idx)
+  const history = getChatHistory(chatHistory.value, idx)
+  _chat(userChat.text, idx, history)
 }
 
 function delChat(idx) {
@@ -107,26 +111,27 @@ function botThinking(idx) {
   }
 }
 
-function _chat(userMsg, idx) {
+function _chat(userMsg, idx, history) {
   const thinkingDone = botThinking(idx)
 
-  chat(agentInfo.value.model, userMsg).then(async stream => {
-    thinkingDone()
-    for await (const part of stream) {
-      chatHistory.value.at(idx).text += part.message.content
-    }
-    chatStore.updateChat(agentInfo.value.id)
-    sending.value = false
-  }).catch(error => {
-    thinkingDone()
-    if (error.name === 'AbortError') {
-      chatHistory.value.at(idx).text = '[Request have been aborted.]'
-    } else {
-      chatHistory.value.at(idx).text = '[Request failed.]'
-    }
-    chatStore.updateChat(agentInfo.value.id)
-    sending.value = false
-  })
+  chatWithHistory(agentInfo.value.model, userMsg, history, prompt.value.value)
+    .then(async stream => {
+      thinkingDone()
+      for await (const part of stream) {
+        chatHistory.value.at(idx).text += part.message.content
+      }
+      chatStore.updateChat(agentInfo.value.id)
+      sending.value = false
+    }).catch(error => {
+      thinkingDone()
+      if (error.name === 'AbortError') {
+        chatHistory.value.at(idx).text = '[Request have been aborted.]'
+      } else {
+        chatHistory.value.at(idx).text = '[Request failed.]'
+      }
+      chatStore.updateChat(agentInfo.value.id)
+      sending.value = false
+    })
 }
 
 function handleCopy() {
@@ -137,7 +142,17 @@ function handleCopy() {
 }
 
 function modifyPrompt() {
-  
+  if (prompt.value.key === '' || prompt.value.value === '') {
+    ElMessage({
+      message: 'Please fill in the prompt.',
+      type: 'warning',
+    })
+    return
+  }
+  agentInfo.value.prompt = prompt.value.key
+  agentStore.updateAgent(agentInfo.value)
+  updateTemplateInfo(prompt.value)
+  detailWindowVisible.value = false
 }
 
 function inputKeyDown(e) {
@@ -182,7 +197,7 @@ function inputKeyDown(e) {
               <span class="label">PROMPT</span>
               <div @click="detailWindowVisible = true" class="icon icon-pen"></div>
             </div>
-            <span class="desc">{{ agentInfo.prompt || 'null' }}</span>
+            <span class="desc">{{ agentInfo.agentPersona || 'null' }}</span>
           </div>
         </div>
         <ResizeBar :min="0" @end="(w) => siteStore.setChatBarW(w)"></ResizeBar>
@@ -192,7 +207,7 @@ function inputKeyDown(e) {
           <div v-for="(v, i) in chatHistory" :key="i" :class="v.inversion ? 'bot-msg' : 'user-msg'">
             <div class="msg-info">
               <div class="icon" :class="v.inversion ? 'icon-robot' : 'icon-cat'"> </div>
-              <div class="timestamp">{{ v.timestamp }}</div>
+              <div class="timestamp">{{ moment(v.timestamp).format('YYYY-MM-DD HH:mm:ss') }}</div>
             </div>
             <div class="msg-container">
               <div class="msg-content" v-html="render(v.text)"></div>
@@ -200,7 +215,7 @@ function inputKeyDown(e) {
                 <div v-if="v.inversion" title="Refresh" @click="reGenerate(i)" class="icon icon-refresh"></div>
                 <HoverMenu>
                   <ul>
-                    <li class="dropdown-item">Copy</li>
+                    <li class="dropdown-item" @click="handleCopy(v.text)">Copy</li>
                     <li class="dropdown-item" @click="delChat(i)">Delete</li>
                   </ul>
                 </HoverMenu>

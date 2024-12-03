@@ -58,8 +58,8 @@ defineEmits(['submit', 'close'])
     line-height: 1.5;
     color: inherit;
     outline: none;
-    border: 1px solid #E2E4E5;
-    background-color: #E2E4E5;
+    border: 1px solid #e5e5e2;
+    background-color: #e5e4e2;
     border-radius: 2px;
   }
 

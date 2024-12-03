@@ -48,8 +48,8 @@ defineProps({ condition: Boolean })
   min-height: 400px;
   max-width: 80%;
   max-height: 80%;
-  background-color: #edece9;
-  box-shadow: 0px 0px 6px rgba(60, 83, 54, 0.67);
+  background-color: #f1f1ea;
+  box-shadow: 0px 0px 6px rgba(83, 73, 54, 0.67);
   transition: all 0.1s ease-out;
 }
 

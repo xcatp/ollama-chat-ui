@@ -110,7 +110,7 @@ function retrieveNextPage(v) {
             <td>
               <el-popover :width="300" popper-style="background: #f4f7f1;padding: 20px;">
                 <template #reference>
-                  {{ v.value.substring(0, 30) + '...' }}
+                  {{ v.value.substring(0, 30) }}
                 </template>
                 <template #default>
                   {{ v.value }}

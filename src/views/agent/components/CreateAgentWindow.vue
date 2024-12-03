@@ -18,11 +18,8 @@ defineEmits(['close', 'submit'])
         <el-option v-for="v in models" :key="v.name" :label="v.name" :value="v.name" />
       </el-select>
       <div class="label">Agent persona</div>
-      <el-select v-model="form.prompt" clearable placeholder="please select your zone">
-        <el-option v-for="v in prompts" :key="v.key" :label="v.key" :value="v.value" />
-      </el-select>
-      <div class="label">Human persona</div>
-      <el-select v-model="form.persona" placeholder="please select your zone">
+      <el-select v-model="form.prompt" clearable placeholder="select a template">
+        <el-option v-for="v in prompts" :key="v.key" :label="v.key" :value="v.key" />
       </el-select>
     </div>
     <div class="pop-window-footer">

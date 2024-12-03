@@ -25,7 +25,7 @@ export const useChatStore = defineStore('chat', () => {
     chatState.value.chatHistory[agentId].push({
       inversion,
       text,
-      timestamp: new Date().toLocaleString()
+      timestamp: new Date().toISOString()
     })
     
     _recordState(agentId)

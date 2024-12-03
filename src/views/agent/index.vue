@@ -5,7 +5,7 @@ import useModelInfo from './composable/useModelInfo'
 import useAgentInfo from './composable/useAgentInfo'
 import useDelAgent from './composable/useDelAgent'
 import moment from 'moment'
-import { useSiteStore, useTemplateStore } from '@/stores'
+import { useSiteStore, useTemplateStore, useAgentStore } from '@/stores'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -15,6 +15,7 @@ import CreateAgentWindow from './components/CreateAgentWindow.vue'
 import EditAgentWindow from './components/EditAgentWindow.vue'
 
 const router = useRouter()
+const agentStore = useAgentStore()
 const siteStore = useSiteStore()
 const loading = ref(false)
 const createAgentDialogVisible = ref(false)
@@ -25,10 +26,10 @@ const { models } = useModelInfo()
 const { agentList, total, getPageData } = useAgentInfo(currPage.value, pageSize)
 const prompts = useTemplateStore().templateState.prompts
 const form = ref({
+  id: '',
   name: '',
   model: '',
-  prompt: '',
-  persona: ''
+  prompt: ''
 })
 
 function chat(agentId) {
@@ -54,8 +55,35 @@ function createAgent() {
   createAgentDialogVisible.value = false
   retrieveNextPage(currPage.value)
 }
+
 function editAgent() {
-  
+  agentStore.updateAgent({
+    id: form.value.id,
+    agentName: form.value.name,
+    model: form.value.model,
+    agentPersona: form.value.prompt
+  })
+  editAgentDialogVisible.value = false
+}
+
+function handleAdd() {
+  form.value = {
+    id: '',
+    name: '',
+    model: '',
+    prompt: ''
+  }
+  createAgentDialogVisible.value = true
+}
+
+function handleEdit(agentInfo) {
+  form.value = {
+    id: agentInfo.id,
+    name: agentInfo.agentName,
+    model: agentInfo.model,
+    prompt: agentInfo.agentPersona
+  }
+  editAgentDialogVisible.value = true
 }
 
 function retrieveNextPage(v) {
@@ -70,11 +98,11 @@ function retrieveNextPage(v) {
   <div class="view-container">
     <CreateAgentWindow :condition="createAgentDialogVisible" :form="form" :models="models" :prompts="prompts"
       @submit="createAgent" @close="createAgentDialogVisible = false" />
-    <EditAgentWindow :condition="editAgentDialogVisible" :form="form" :prompts="prompts" 
-      @submit="editAgent" @close="editAgentDialogVisible = false" />
+    <EditAgentWindow :condition="editAgentDialogVisible" :form="form" :prompts="prompts" @submit="editAgent"
+      @close="editAgentDialogVisible = false" />
     <div class="header-panel">
       <div class="title">Agents</div>
-      <SubmitBtn @click="createAgentDialogVisible = true">New</SubmitBtn>
+      <SubmitBtn @click="handleAdd">New</SubmitBtn>
     </div>
     <div class="main-panel">
       <DataTable :loading="loading">
@@ -93,12 +121,12 @@ function retrieveNextPage(v) {
             <td>{{ v.agentName }}</td>
             <td>{{ v.model }}</td>
             <td>{{ v.chatCount }}</td>
-            <td>{{ v.lastRun || 'Never' }}</td>
+            <td>{{ v.lastRun ? moment(v.lastRun).format('YYYY/MM/DD HH:mm:ss') : 'Never' }}</td>
             <td>{{ moment(v.lifespan).format('YYYY/MM/DD HH:mm:ss') }}</td>
             <td class="op-col">
               <div class="op-container">
                 <SubmitBtn class="chat-btn" @click="chat(v.id)">chat</SubmitBtn>
-                <div class="icon icon-edit" @click="editAgentDialogVisible = true"></div>
+                <div class="icon icon-edit" @click="handleEdit(v)"></div>
                 <el-popconfirm width="220" title="Are you sure to delete this?">
                   <template #reference>
                     <div class="icon icon-delete"></div>

@@ -1,7 +1,7 @@
 import { ref } from "vue"
 import { useTemplateStore } from '@/stores'
 
-export default function useTemplateInfo(key) {
+export function useTemplateInfo(key) {
 
   const prompt = ref(null)
 
@@ -16,4 +16,10 @@ export default function useTemplateInfo(key) {
   return {
     prompt,
   }
+}
+
+export function updateTemplateInfo({ key, value }) {
+  const templateStore = useTemplateStore()
+  if (templateStore.addPrompt({ key, value })) return
+  templateStore.updatePrompt(key, value)
 }

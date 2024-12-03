@@ -21,7 +21,7 @@ export const useAgentStore = defineStore('agent', () => {
       humanPersona,
       chatCount: 0,
       lastRun: '',
-      lifespan: new Date()
+      lifespan: new Date().toISOString()
     }
     agentState.value.agents.push(newAgent)
     _recordState()
@@ -31,7 +31,7 @@ export const useAgentStore = defineStore('agent', () => {
     const chatStore = useChatStore()
     chatStore.removeChat(id)
     agentState.value.agents = agentState.value.agents.filter(agent => agent.id !== id)
-    
+
     _recordState()
   }
 
@@ -57,6 +57,7 @@ export const useAgentStore = defineStore('agent', () => {
   return {
     agentState,
     addAgent,
-    removeAgent
+    removeAgent,
+    updateAgent
   }
 })
