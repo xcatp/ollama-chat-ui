@@ -6,7 +6,7 @@ const countDown = ref(5)
 const timer = setInterval(() => {
   if (countDown.value > 0) countDown.value--
   else {
-    // window.location.href = '/'
+    window.location.href = '/'
     clearInterval(timer)
   }
 }, 1000)

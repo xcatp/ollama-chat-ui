@@ -18,7 +18,7 @@
       <div class="main-footer">
         <div class="footer-text">
           2024 ©
-          <a href="">xcatp</a>
+          <a href="https://gitee.com/dkwd">xcatp</a>
         </div>
       </div>
     </div>
