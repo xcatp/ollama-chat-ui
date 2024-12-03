@@ -38,9 +38,14 @@
     padding: 4px 11px;
     font-size: 14px;
     line-height: 1.5;
-    color: inherit;
-    border: 1px solid #e5e5e2;
-    background-color: #e5e4e2;
+    color: #444c3f;
+    border: 1px solid #9cb294;
+    background-color: #e4ecdb;
     border-radius: 2px;
   }
+}
+
+.pop-window-footer {
+  display: flex;
+  justify-content: end;
 }

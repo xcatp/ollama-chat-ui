@@ -5,9 +5,7 @@ import SubmitBtn from '@/components/button/SubmitBtn.vue'
 import DataTable from '@/components/DataTable.vue'
 import PromptInfo from './components/PromptInfo.vue'
 import usePromptInfo from './composable/usePromptInfo'
-import useCreatePrompt from './composable/useCreatePrompt'
-import useUpdatePrompt from './composable/useUpdatePrompt'
-import useDelPrompt from './composable/useDelPrompt'
+import promptService from './composable/usePromptService'
 import { ElMessage } from 'element-plus'
 
 const loading = ref(false)
@@ -17,13 +15,14 @@ const isEdit = ref(false)
 const popWindowVisible = ref(false)
 const { promptList, total, getPageData } = usePromptInfo(currPage.value, pageSize)
 const form = ref({
+  id: '',
   key: '',
   value: ''
 })
 
-function handleEdit(key, value) {
+function handleEdit(id, key, value) {
   form.value = {
-    key, value
+    id, key, value
   }
   popWindowVisible.value = true
   isEdit.value = true
@@ -31,6 +30,7 @@ function handleEdit(key, value) {
 
 function handleAdd() {
   form.value = {
+    id: '',
     key: '',
     value: ''
   }
@@ -38,12 +38,12 @@ function handleAdd() {
   isEdit.value = false
 }
 
-function handleDel(key) {
-  useDelPrompt(key)
+function handleDel(id) {
+  promptService.useDelPrompt(id)
   retrieveNextPage(currPage.value)
 }
 
-function submit() {
+async function submit() {
   if (!form.value.key || !form.value.value) {
     ElMessage({
       message: 'Please fill in the form',
@@ -51,33 +51,19 @@ function submit() {
     })
     return
   }
-
   if (isEdit.value) {
-    useUpdatePrompt(form.value).then(() => {
-      form.value = {
-        key: '',
-        value: ''
-      }
-      popWindowVisible.value = false
-      retrieveNextPage(currPage.value)
-      isEdit.value = false
-    }).catch(() => ElMessage({
-      message: 'Nonexistent key',
-      type: 'error'
-    }))
+    await promptService.useUpdatePrompt(form.value)
+    isEdit.value = false
   } else {
-    useCreatePrompt(form.value).then(() => {
-      form.value = {
-        key: '',
-        value: ''
-      }
-      popWindowVisible.value = false
-      retrieveNextPage(currPage.value)
-    }).catch(() => ElMessage({
-      message: 'Duplicate key',
-      type: 'error'
-    }))
+    await promptService.useCreatePrompt(form.value)
   }
+  form.value = {
+    id: '',
+    key: '',
+    value: ''
+  }
+  popWindowVisible.value = false
+  retrieveNextPage(currPage.value)
 }
 
 function retrieveNextPage(v) {
@@ -98,13 +84,13 @@ function retrieveNextPage(v) {
     <div class="main-panel">
       <DataTable :loading="loading">
         <template #header>
-          <th style="width: 4em;">#</th>
+          <th style="width: 5em;">#</th>
           <th>Name</th>
           <th>Value</th>
           <th style="width: 8em;"></th>
         </template>
         <template #body>
-          <tr v-for="(v, i) in promptList" :key="v.key">
+          <tr v-for="(v, i) in promptList" :key="v.id">
             <td class="id-col">{{ i + 1 + (currPage - 1) * pageSize }}</td>
             <td>{{ v.key }}</td>
             <td>
@@ -119,14 +105,14 @@ function retrieveNextPage(v) {
             </td>
             <td class="op-col">
               <div class="op-container">
-                <div class="icon icon-edit" @click="handleEdit(v.key, v.value)"></div>
+                <div class="icon icon-edit" @click="handleEdit(v.id, v.key, v.value)"></div>
                 <el-popconfirm width="220" title="Are you sure to delete this?">
                   <template #reference>
                     <div class="icon icon-delete"></div>
                   </template>
                   <template #actions="{ cancel }">
                     <el-button size="small" @click="cancel">No</el-button>
-                    <el-button type="danger" size="small" @click="handleDel(v.key)">
+                    <el-button type="danger" size="small" @click="handleDel(v.id)">
                       Yes
                     </el-button>
                   </template>
@@ -227,10 +213,6 @@ function retrieveNextPage(v) {
     border: 1px solid var(--border-primary);
   }
 
-  .id-col {
-    background-color: var(--background-secondary) !important;
-  }
-
   .op-container {
     display: flex;
     flex-wrap: wrap;
@@ -258,8 +240,6 @@ function retrieveNextPage(v) {
   mask-image: url('/static/svg/delete.svg');
 }
 
-
-
 .pagination-container {
   margin-top: 10px;
   display: flex;
@@ -269,30 +249,5 @@ function retrieveNextPage(v) {
   .total-count {
     margin-right: 10px;
   }
-}
-
-// el 样式
-.el-checkbox {
-  margin-right: 10px;
-}
-
-:deep(.el-pagination.is-background .el-pager li:not(.is-disabled).is-active) {
-  background-color: var(--btn-bgc) !important; //修改默认的背景色
-  border: 1px solid var(--border-secondary) !important;
-  color: var(--text-02);
-}
-
-:deep(.pagination-container>div>button),
-:deep(.pagination-container > div > ul > li) {
-  color: var(--text-02);
-  border: 1px solid var(--border-secondary) !important;
-}
-
-:deep(.pagination-container>div>button) {
-  background-color: var(--bgc-04) !important;
-}
-
-:deep(.pagination-container > div > ul > li) {
-  background-color: var(--bgc-02) !important;
 }
 </style>

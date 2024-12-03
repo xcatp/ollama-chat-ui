@@ -32,7 +32,6 @@ const dirs = ref([
     multi: true,
     children: [
       { id: 1, path: '/templates/prompt', title: 'System prompts' },
-      { id: 2, path: '/templates/persona', title: 'Human personas' },
     ]
   }, {
     id: 3,

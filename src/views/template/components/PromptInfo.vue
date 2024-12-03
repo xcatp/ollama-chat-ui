@@ -12,9 +12,9 @@ defineEmits(['submit', 'close'])
     </div>
     <div class="pop-window-body">
       <div class="label">Name <span class="desc">required unique</span></div>
-      <input type="text" v-model="form.key" placeholder="Name" />
+      <input type="text" v-model="form.key" />
       <div class="label">Value <span class="desc">required</span></div>
-      <textarea v-model="form.value" placeholder="Value"></textarea>
+      <textarea v-model="form.value"></textarea>
     </div>
     <div class="pop-window-footer">
       <SubmitBtn @click="$emit('submit')">Done</SubmitBtn>
@@ -36,7 +36,7 @@ defineEmits(['submit', 'close'])
 
 .pop-window-body {
   flex: 1;
-  margin: 2em 20px 0;
+  margin: 2em 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -56,18 +56,22 @@ defineEmits(['submit', 'close'])
     padding: 4px 11px;
     font-size: 14px;
     line-height: 1.5;
-    color: inherit;
+    color: #444c3f;
     outline: none;
-    border: 1px solid #e5e5e2;
-    background-color: #e5e4e2;
+    border: 1px solid #9cb294;
+    background-color: #e4ecdb;
     border-radius: 2px;
   }
 
   textarea {
-    min-height: 100px;
+    min-height: 200px;
     height: auto;
     resize: vertical;
   }
+}
 
+.pop-window-footer {
+  display: flex;
+  justify-content: end;
 }
 </style>

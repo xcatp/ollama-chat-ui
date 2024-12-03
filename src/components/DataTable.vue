@@ -29,7 +29,6 @@ defineProps({
 </template>
 
 <style lang="scss">
-
 .data-container {
   margin-top: 5px;
   width: 100%;
@@ -46,6 +45,7 @@ defineProps({
   border-collapse: collapse;
   overflow: auto;
   border: 1px solid var(--border-primary);
+  font-family: "Oswald", "Bookman Old Style", serif;
 
   thead {
     position: sticky;

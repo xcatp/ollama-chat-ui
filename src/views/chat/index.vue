@@ -155,6 +155,12 @@ function modifyPrompt() {
   detailWindowVisible.value = false
 }
 
+function clearChatHistory(e) {
+  e()
+  chatStore.removeChat(agentInfo.value.id)
+  chatHistory.value = []
+}
+
 function inputKeyDown(e) {
   if (e.keyCode === 13 && !e.shiftKey) {
     e.preventDefault()
@@ -195,10 +201,21 @@ function inputKeyDown(e) {
           <div class="info-item">
             <div style="display: flex; align-items: center;">
               <span class="label">PROMPT</span>
-              <div @click="detailWindowVisible = true" class="icon icon-pen"></div>
+              <div v-if="agentInfo.agentPersona" @click="detailWindowVisible = true" class="icon icon-pen"></div>
             </div>
             <span class="desc">{{ agentInfo.agentPersona || 'null' }}</span>
           </div>
+        </div>
+        <div class="left-panel-footer">
+          <el-popconfirm width="220" :hide-after="0" :hide-icon="true" title="Clear chat history?">
+            <template #reference>
+              <div class="icon icon-clear" title="Clear chat history"></div>
+            </template>
+            <template #actions="{ cancel, confirm }">
+              <el-button size="small" @click="cancel">No</el-button>
+              <el-button type="danger" size="small" @click="clearChatHistory(confirm)">Yes</el-button>
+            </template>
+          </el-popconfirm>
         </div>
         <ResizeBar :min="0" @end="(w) => siteStore.setChatBarW(w)"></ResizeBar>
       </div>
@@ -293,8 +310,11 @@ function inputKeyDown(e) {
   padding: 10px 0 10px 10px;
   position: sticky;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
 
   .model-info {
+    flex: 1;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
@@ -316,6 +336,7 @@ function inputKeyDown(e) {
       color: #718370;
     }
   }
+
 }
 
 .chat-panel {
@@ -329,21 +350,23 @@ function inputKeyDown(e) {
   .chat-input {
     position: relative;
     padding: 0;
-    background-color: #f1f7eb;
+    background-color: #eaefe3;
     box-shadow: 0px -2px 4px rgba(52, 71, 47, 0.188);
     min-height: 60px;
     display: flex;
+    font-family: "PT Serif", serif;
 
     .edit-input {
       width: 100%;
       max-height: 100%;
-      background: #e2eadf;
+      background: #eaefe3;
       color: inherit;
       outline: none;
       border: none;
       resize: none;
       caret-color: #18a058;
       padding: 5px;
+      font-size: 16px;
       line-height: 1.6;
     }
 
@@ -404,7 +427,7 @@ function inputKeyDown(e) {
     margin: 0 25px;
 
     .msg-content {
-      background-color: #f6f5ea;
+      background-color: #f4f6ea;
       box-shadow: 0px 2px 4px rgba(52, 71, 47, 0.188);
       padding: .5em .6em;
       border-radius: 5px;
@@ -460,6 +483,18 @@ function inputKeyDown(e) {
   margin: 0 5px;
   background-color: #748059;
   mask-image: url('/static/svg/refresh.svg');
+
+  &:hover {
+    background-color: rgb(0, 53, 7);
+  }
+}
+
+.icon-clear {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  background-color: #748059;
+  mask-image: url('/static/svg/clear.svg');
 
   &:hover {
     background-color: rgb(0, 53, 7);

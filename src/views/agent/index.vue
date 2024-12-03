@@ -1,9 +1,8 @@
 <!--  -->
 <script setup>
-import useCreateAgent from './composable/useCreateAgent'
 import useModelInfo from './composable/useModelInfo'
 import useAgentInfo from './composable/useAgentInfo'
-import useDelAgent from './composable/useDelAgent'
+import useAgentService from './composable/useAgentService'
 import moment from 'moment'
 import { useSiteStore, useTemplateStore, useAgentStore } from '@/stores'
 import { ref } from 'vue'
@@ -37,8 +36,9 @@ function chat(agentId) {
   router.push('/chat')
 }
 
-function delAgent(agentId) {
-  useDelAgent(agentId)
+function delAgent(agentId, _) {
+  _()
+  useAgentService.useDelAgent(agentId)
   retrieveNextPage(currPage.value)
 }
 
@@ -51,7 +51,7 @@ function createAgent() {
     })
     return
   }
-  useCreateAgent(form.value)
+  useAgentService.useCreateAgent(form.value)
   createAgentDialogVisible.value = false
   retrieveNextPage(currPage.value)
 }
@@ -127,13 +127,13 @@ function retrieveNextPage(v) {
               <div class="op-container">
                 <SubmitBtn class="chat-btn" @click="chat(v.id)">chat</SubmitBtn>
                 <div class="icon icon-edit" @click="handleEdit(v)"></div>
-                <el-popconfirm width="220" title="Are you sure to delete this?">
+                <el-popconfirm width="220" :hide-after="0" :hide-icon="true" title="Delete agent and chat history?">
                   <template #reference>
                     <div class="icon icon-delete"></div>
                   </template>
-                  <template #actions="{ cancel }">
+                  <template #actions="{ cancel, confirm }">
                     <el-button size="small" @click="cancel">No</el-button>
-                    <el-button type="danger" size="small" @click="delAgent(v.id)">
+                    <el-button type="danger" size="small" @click="delAgent(v.id, confirm)">
                       Yes
                     </el-button>
                   </template>
@@ -196,10 +196,6 @@ function retrieveNextPage(v) {
 
 .data-table {
 
-  .id-col {
-    background-color: var(--background-secondary) !important;
-  }
-
   .op-container {
     display: flex;
     flex-wrap: wrap;
@@ -244,23 +240,15 @@ function retrieveNextPage(v) {
   }
 }
 
-:deep(.el-pagination.is-background .el-pager li:not(.is-disabled).is-active) {
-  background-color: var(--btn-bgc) !important; //修改默认的背景色
-  border: 1px solid var(--border-secondary) !important;
-  color: var(--text-02);
-}
 
-:deep(.pagination-container>div>button),
-:deep(.pagination-container > div > ul > li) {
-  color: var(--text-02);
-  border: 1px solid var(--border-secondary) !important;
-}
+:deep(.el-select__wrapper) {
+  background-color: var(--bgc-02);
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 2px;
+  box-shadow: none;
 
-:deep(.pagination-container>div>button) {
-  background-color: var(--bgc-04) !important;
-}
-
-:deep(.pagination-container > div > ul > li) {
-  background-color: var(--bgc-02) !important;
+  &:hover {
+    box-shadow: none;
+  }
 }
 </style>

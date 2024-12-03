@@ -58,7 +58,7 @@ const HideMenu = () => {
     z-index: 100;
     background-color: #dcf2e4;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    transition: opacity .5s ease-out;
+    transition: opacity .15s ease-out;
   }
 }
 
@@ -77,7 +77,7 @@ const HideMenu = () => {
 
 .ani-enter-active,
 .ani-leave-active {
-  transition: opacity .5s ease-out;
+  transition: opacity .15s ease-out;
 }
 
 .ani-enter-from,

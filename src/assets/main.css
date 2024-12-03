@@ -1,6 +1,12 @@
 @import './theme-light.css';
 @import './reset.css';
 @import './md.scss';
+@import './el-fix.scss';
+
+html {
+  /* filter: invert(1) hue-rotate(180deg); */
+  /* filter:grayscale(1); */
+}
 
 .icon {
   mask-repeat: no-repeat;
