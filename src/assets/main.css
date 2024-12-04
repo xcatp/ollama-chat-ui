@@ -4,8 +4,8 @@
 @import './el-fix.scss';
 
 html {
-  /* filter: invert(1) hue-rotate(180deg); */
-  /* filter:grayscale(1); */
+  /* filter: invert(0) hue-rotate(150deg); */
+  /* filter:grayscale(.3); */
 }
 
 .icon {
@@ -15,6 +15,7 @@ html {
   width: 15px;
   height: 15px;
   margin: auto 4px auto 8px;
+  background-color: var(--icon-bgc);
 }
 
 .dh {

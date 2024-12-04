@@ -28,7 +28,7 @@
   --border-primary: #a1c6b1;
   --border-secondary: #7e999e;
   /* icon */
-  --icon-bgc: #878c4f;
+  --icon-bgc: #628C4F;
   /* colors */
   --color-orange: #e8a644;
   --color-green: #008a00;
@@ -84,4 +84,7 @@
   --card-right-side-bgc: #EDF1DF;
   /* footer */
   --site-footer-bgc: rgba(58, 121, 87, 0.553);
+  
+  --chat-bot-msg-bgc: #f4f6ea;
+  --chat-usr-msg-bgc: #f0f6ea;
 }
