@@ -1,9 +1,9 @@
 <!--  -->
 <script setup>
-import ResizeBar from '@/components/ResizeBar.vue';
-import PopWindow from '@/components/PopWindow.vue';
+import ResizeBar from '@/components/ResizeBar.vue'
+import SettingWindow from './components/SettingWindow.vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -89,11 +89,7 @@ function tryFindActiveShard() {
 
 <template>
   <div class="view-container invisible-scrollbar">
-    <PopWindow :condition="settingDialogVisible" @close="settingDialogVisible = false">
-      <div class="pop-window-header">
-        <div class="title">Settings</div>
-      </div>
-    </PopWindow>
+    <SettingWindow :condition="settingDialogVisible" @close="settingDialogVisible = false" />
     <RouterLink to="/" class="emboss">
       <div class="emboss-title">Ollama-Chat</div>
       <div class="emboss-subtitle">ui</div>
@@ -187,27 +183,22 @@ function tryFindActiveShard() {
 }
 
 .icon-robot {
-  background-color: #75972b;
   mask-image: url('/static/svg/robot.svg');
 }
 
 .icon-chat {
-  background-color: #75972b;
   mask-image: url('/static/svg/chat.svg');
 }
 
 .icon-prompt {
-  background-color: #75972b;
   mask-image: url('/static/svg/prompt.svg');
 }
 
 .icon-setting {
-  background-color: #75972b;
   mask-image: url('/static/svg/setting.svg');
 }
 
 .icon-storage {
-  background-color: #75972b;
   mask-image: url('/static/svg/storage.svg');
 }
 

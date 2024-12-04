@@ -29,11 +29,7 @@ function handleEdit(id, key, value) {
 }
 
 function handleAdd() {
-  form.value = {
-    id: '',
-    key: '',
-    value: ''
-  }
+  Object.keys(form.value).forEach(key => form.value[key] = '')
   popWindowVisible.value = true
   isEdit.value = false
 }
@@ -57,11 +53,7 @@ async function submit() {
   } else {
     await promptService.useCreatePrompt(form.value)
   }
-  form.value = {
-    id: '',
-    key: '',
-    value: ''
-  }
+  Object.keys(form.value).forEach(key => form.value[key] = '')
   popWindowVisible.value = false
   retrieveNextPage(currPage.value)
 }

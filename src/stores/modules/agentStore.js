@@ -11,12 +11,13 @@ export const useAgentStore = defineStore('agent', () => {
 
   _init()
 
-  function addAgent({ agentName, model, agentPersona, humanPersona }) {
+  function addAgent({ agentName, model, agentPersona, humanPersona, weight }) {
     const id = uuidv4()
     const newAgent = {
       id,
       agentName,
       model,
+      weight,
       agentPersona,
       humanPersona,
       chatCount: 0,
@@ -35,19 +36,25 @@ export const useAgentStore = defineStore('agent', () => {
     _recordState()
   }
 
-  function updateAgent({ id, agentName, model, agentPersona, humanPersona }) {
+  function updateAgent({ id, agentName, model, agentPersona, humanPersona, weight }) {
     const agent = agentState.value.agents.find(agent => agent.id === id)
     if (agent) {
       agent.agentName = agentName
       agent.model = model
       agent.agentPersona = agentPersona
       agent.humanPersona = humanPersona
+      agent.weight = weight
       _recordState()
     }
   }
 
   function _init() {
     agentState.value.agents = JSON.parse(local.getItem('agents')) || []
+  }
+
+  function _reset() {
+    agentState.value.agents = []
+    local.delItem('agents')
   }
 
   function _recordState() {
@@ -58,6 +65,7 @@ export const useAgentStore = defineStore('agent', () => {
     agentState,
     addAgent,
     removeAgent,
-    updateAgent
+    updateAgent,
+    _reset
   }
 })

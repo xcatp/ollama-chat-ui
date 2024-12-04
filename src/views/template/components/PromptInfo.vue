@@ -1,6 +1,7 @@
 <!--  -->
 <script setup>
 import PopWindow from '@/components/PopWindow.vue'
+import SubmitBtn from '@/components/button/SubmitBtn.vue'
 defineProps(['form', 'condition'])
 defineEmits(['submit', 'close'])
 </script>

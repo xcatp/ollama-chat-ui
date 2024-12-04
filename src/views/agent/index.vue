@@ -4,7 +4,7 @@ import useModelInfo from './composable/useModelInfo'
 import useAgentInfo from './composable/useAgentInfo'
 import useAgentService from './composable/useAgentService'
 import moment from 'moment'
-import { useSiteStore, useTemplateStore, useAgentStore } from '@/stores'
+import { useSiteStore, useTemplateStore } from '@/stores'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -14,7 +14,6 @@ import CreateAgentWindow from './components/CreateAgentWindow.vue'
 import EditAgentWindow from './components/EditAgentWindow.vue'
 
 const router = useRouter()
-const agentStore = useAgentStore()
 const siteStore = useSiteStore()
 const loading = ref(false)
 const createAgentDialogVisible = ref(false)
@@ -28,6 +27,7 @@ const form = ref({
   id: '',
   name: '',
   model: '',
+  weight: '',
   prompt: ''
 })
 
@@ -46,8 +46,7 @@ function createAgent() {
   if (form.value.name === '' || form.value.model === '') {
     ElMessage({
       message: 'Please fill in the required fields',
-      type: 'error',
-      plain: true,
+      type: 'error'
     })
     return
   }
@@ -57,22 +56,13 @@ function createAgent() {
 }
 
 function editAgent() {
-  agentStore.updateAgent({
-    id: form.value.id,
-    agentName: form.value.name,
-    model: form.value.model,
-    agentPersona: form.value.prompt
-  })
+  useAgentService.useUpdateAgent(form.value)
   editAgentDialogVisible.value = false
+  retrieveNextPage(currPage.value)
 }
 
 function handleAdd() {
-  form.value = {
-    id: '',
-    name: '',
-    model: '',
-    prompt: ''
-  }
+  Object.keys(form.value).forEach(key => form.value[key] = '')
   createAgentDialogVisible.value = true
 }
 
@@ -81,7 +71,8 @@ function handleEdit(agentInfo) {
     id: agentInfo.id,
     name: agentInfo.agentName,
     model: agentInfo.model,
-    prompt: agentInfo.agentPersona
+    prompt: agentInfo.agentPersona,
+    weight: agentInfo.weight || 0
   }
   editAgentDialogVisible.value = true
 }

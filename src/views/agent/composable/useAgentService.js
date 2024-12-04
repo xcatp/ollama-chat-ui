@@ -1,6 +1,6 @@
 import { useAgentStore } from "@/stores"
 
-export function useCreateAgent({ name, model, prompt, persona }) {
+export function useCreateAgent({ name, model, prompt, persona, weight }) {
 
   createAgentLocal()
 
@@ -11,7 +11,8 @@ export function useCreateAgent({ name, model, prompt, persona }) {
       model,
       agentName: name,
       agentPersona: prompt,
-      humanPersona: persona
+      humanPersona: persona,
+      weight: weight || 0
     })
   }
 
@@ -26,7 +27,24 @@ export function useDelAgent(agentId) {
   }
 }
 
+export function useUpdateAgent({ id, name, model, prompt, weight }) {
+
+  updateLocal()
+
+  function updateLocal() {
+    const agentStore = useAgentStore()
+    agentStore.updateAgent({
+      id,
+      agentName: name,
+      model,
+      agentPersona: prompt,
+      weight
+    })
+  }
+}
+
 export default {
   useCreateAgent,
-  useDelAgent
+  useDelAgent,
+  useUpdateAgent
 }

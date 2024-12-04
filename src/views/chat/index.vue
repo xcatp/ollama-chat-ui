@@ -135,7 +135,8 @@ function _chat(userMsg, idx, history) {
     })
 }
 
-function handleCopy() {
+function handleCopy(text) {
+  navigator.clipboard.writeText(text)
   ElMessage({
     message: 'Copied.',
     type: 'success',
@@ -408,7 +409,7 @@ function inputKeyDown(e) {
     }
 
     .msg-content {
-      background-color: #f0f6ea !important;
+      background-color: var(--chat-usr-msg-bgc) !important;
     }
   }
 
@@ -427,7 +428,7 @@ function inputKeyDown(e) {
     margin: 0 25px;
 
     .msg-content {
-      background-color: #f4f6ea;
+      background-color: var(--chat-bot-msg-bgc);
       box-shadow: 0px 2px 4px rgba(52, 71, 47, 0.188);
       padding: .5em .6em;
       border-radius: 5px;
@@ -451,26 +452,18 @@ function inputKeyDown(e) {
 }
 
 .icon-cat {
-  width: 15px;
-  height: 15px;
   margin: 5px;
-  background-color: #426000;
   mask-image: url('/static/svg/cat1.svg');
 }
 
 .icon-robot {
-  width: 15px;
-  height: 15px;
   margin: 5px;
-  background-color: #426000;
   mask-image: url('/static/svg/robot.svg');
 }
 
 .icon-pen {
-  width: 15px;
-  height: 15px;
-  background-color: #426000;
   mask-image: url('/static/svg/pen.svg');
+  background-color: #748059;
 
   &:hover {
     background-color: rgb(0, 56, 7);
@@ -481,7 +474,6 @@ function inputKeyDown(e) {
   width: 10px;
   height: 10px;
   margin: 0 5px;
-  background-color: #748059;
   mask-image: url('/static/svg/refresh.svg');
 
   &:hover {
@@ -490,8 +482,6 @@ function inputKeyDown(e) {
 }
 
 .icon-clear {
-  width: 15px;
-  height: 15px;
   margin: 0;
   background-color: #748059;
   mask-image: url('/static/svg/clear.svg');

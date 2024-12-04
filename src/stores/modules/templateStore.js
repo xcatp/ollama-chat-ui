@@ -42,10 +42,16 @@ export const useTemplateStore = defineStore('template', () => {
     return false
   }
 
+  const _reset = function () {
+    templateState.value.prompts = []
+    local.delItem('prompts')
+  }
+
   return {
     templateState,
     addPrompt,
     updatePrompt,
-    removePrompt
+    removePrompt,
+    _reset
   }
 })

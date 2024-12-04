@@ -17,20 +17,20 @@ export const useChatStore = defineStore('chat', () => {
     return chatState.value.chatHistory[agentId]
   }
 
-  const addChat = (agentId, { inversion, text }) => {
+  const addChat = (agentId, { inversion, text, timestamp }) => {
     if (!chatState.value.chatHistory[agentId]) {
       chatState.value.chatHistory[agentId] = []
     }
-    
+
     chatState.value.chatHistory[agentId].push({
       inversion,
       text,
-      timestamp: new Date().toISOString()
+      timestamp: timestamp || new Date().toISOString()
     })
-    
+
     _recordState(agentId)
   }
-  
+
   const updateChat = (agentId, idx, text) => {
     _recordState(agentId)
   }
@@ -50,10 +50,13 @@ export const useChatStore = defineStore('chat', () => {
     const agentList = agentStore.agentState.agents
     agentList.forEach(agent => {
       const history = local.getItem(`chatHistory_${agent.id}`)
-      if (history) {
-        chatState.value.chatHistory[agent.id] = JSON.parse(history)
-      }
+      if (history) chatState.value.chatHistory[agent.id] = JSON.parse(history)
     })
+  }
+
+  function _reset() {
+    for (const v in chatState.value.chatHistory) local.delItem(`chatHistory_${v}`)
+    chatState.value.chatHistory = {}
   }
 
   function _recordState(agentId) {
@@ -66,6 +69,7 @@ export const useChatStore = defineStore('chat', () => {
     getHistory,
     updateChat,
     removeChat,
-    removeChatItem
+    removeChatItem,
+    _reset
   }
 })

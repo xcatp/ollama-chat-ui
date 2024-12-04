@@ -10,9 +10,4 @@ const i18n = createI18n({
   messages, // 设置语言包
 })
 
-
-// ins.install = (app) => {
-//   app.config.globalProperties.$t = key => key.split('.').reduce((o, c) => o && o[c], options)
-// }
-
 export default i18n

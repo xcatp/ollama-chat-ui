@@ -21,6 +21,8 @@ defineEmits(['close', 'submit'])
       <el-select v-model="form.prompt" clearable placeholder="select a template">
         <el-option v-for="v in prompts" :key="v.key" :label="v.key" :value="v.key" />
       </el-select>
+      <div class="label">Weight <span class="desc"></span></div>
+      <input type="text" v-model="form.weight" placeholder="For sort" />
     </div>
     <div class="pop-window-footer">
       <div class="form-btn">

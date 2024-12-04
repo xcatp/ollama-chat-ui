@@ -20,9 +20,17 @@ export const useSiteStore = defineStore('site', () => {
     local.setItem('activeAgentId', id)
   }
 
+  const _reset = () => {
+    siteState.value.activeAgentId = ''
+    local.delItem('activeAgentId')
+    siteState.value.ChatBarW = 220
+    local.delItem('chatBarW')
+  }
+
   return {
     siteState,
     setChatBarW,
     setActiveAgentId,
+    _reset
   }
 })

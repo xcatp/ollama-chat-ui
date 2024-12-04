@@ -1,3 +1,5 @@
+// 给代码块加上复制及行号切换事件
+
 let isShowLN = true
 
 export default function useEvent() {
