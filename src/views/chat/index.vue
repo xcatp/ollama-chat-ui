@@ -122,6 +122,7 @@ function _chat(userMsg, idx, history) {
       }
       chatStore.updateChat(agentInfo.value.id)
       sending.value = false
+      useEvent()
     }).catch(error => {
       thinkingDone()
       if (error.name === 'AbortError') {
@@ -158,7 +159,6 @@ function modifyPrompt() {
 function clearChatHistory(e) {
   e()
   chatStore.removeChat(agentInfo.value.id)
-  chatHistory.value = []
 }
 
 function inputKeyDown(e) {

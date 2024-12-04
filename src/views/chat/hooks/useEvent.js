@@ -1,14 +1,10 @@
-import { onUpdated } from "vue"
-
 let isShowLN = true
 
 export default function useEvent() {
 
-  onUpdated(() => {
-    onCopyCode()
-    onToggleLN()
+  onCopyCode()
+  onToggleLN()
 
-  })
   function onCopyCode() {
     const selects = document.getElementsByClassName('copy-action')
     for (const cur of selects) {

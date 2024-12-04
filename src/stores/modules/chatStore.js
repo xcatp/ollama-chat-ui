@@ -37,7 +37,7 @@ export const useChatStore = defineStore('chat', () => {
 
   const removeChat = (agentId) => {
     local.delItem(`chatHistory_${agentId}`)
-    chatState.value.chatHistory[agentId] = []
+    chatState.value.chatHistory[agentId].length = 0
   }
 
   const removeChatItem = (agentId, idx) => {
