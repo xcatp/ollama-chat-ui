@@ -102,9 +102,10 @@ function retrieveNextPage(v) {
           <th style="width: 7em">Name</th>
           <th style="width: 7em;">Model</th>
           <th style="width: 4em;">Chat Count</th>
-          <th style="width: 6em;">Last Run</th>
+          <th style="width: 7em;">Last Run</th>
           <th style="width: 7em;">Lifespan</th>
-          <th style="width: 7em;">Operation</th>
+          <th style="width: 3em;">Weight</th>
+          <th style="width: 6em;">Operation</th>
         </template>
         <template #body>
           <tr v-for="(v, i) in agentList" :key="i">
@@ -114,6 +115,7 @@ function retrieveNextPage(v) {
             <td>{{ v.chatCount }}</td>
             <td>{{ v.lastRun ? moment(v.lastRun).format('YYYY/MM/DD HH:mm:ss') : 'Never' }}</td>
             <td>{{ moment(v.lifespan).format('YYYY/MM/DD HH:mm:ss') }}</td>
+            <td>{{ v.weight }}</td>
             <td class="op-col">
               <div class="op-container">
                 <SubmitBtn class="chat-btn" @click="chat(v.id)">chat</SubmitBtn>
@@ -165,6 +167,7 @@ function retrieveNextPage(v) {
   font-size: 1.5rem;
   font-weight: 600;
   line-height: 2rem;
+  z-index: 80;
 
   .title {
     font-size: 1.5rem;
@@ -186,6 +189,10 @@ function retrieveNextPage(v) {
 }
 
 .data-table {
+
+  td {
+    // border: 1px solid red;
+  }
 
   .op-container {
     display: flex;

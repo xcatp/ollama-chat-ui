@@ -270,6 +270,7 @@ function inputKeyDown(e) {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  z-index: 80;
 
   .title {
     font-size: 1.5rem;

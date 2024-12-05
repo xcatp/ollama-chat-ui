@@ -71,6 +71,7 @@ onMounted(async () => {
   font-size: 1.5rem;
   font-weight: 600;
   line-height: 2rem;
+  z-index: 80;
 }
 
 
