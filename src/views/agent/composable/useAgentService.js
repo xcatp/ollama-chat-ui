@@ -38,7 +38,7 @@ export function useUpdateAgent({ id, name, model, prompt, weight }) {
       agentName: name,
       model,
       agentPersona: prompt,
-      weight
+      weight: weight || 0
     })
   }
 }
