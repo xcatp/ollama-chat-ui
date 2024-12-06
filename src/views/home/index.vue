@@ -32,21 +32,6 @@
   flex-direction: column;
 }
 
-.header-panel {
-  position: sticky;
-  top: 0px;
-  background: #e5ecde;
-  box-shadow: 0px 0px 6px rgba(60, 83, 54, 0.67);
-  padding-left: 1em;
-  height: 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 2rem;
-}
-
 .main-panel {
   flex: 1;
   display: flex;
@@ -54,17 +39,16 @@
   margin: 5px;
   padding: 5px;
   border: 1px solid var(--border-primary);
-  box-shadow: 0px 3px 4px var(--site-home-shadow);
-  background-color: var(--view-category-bgc);
+  box-shadow: 0px 3px 4px var(--shadow-02);
+  background-color: var(--view-bgc-02);
 }
 
 
 .main-header {
   margin: 10px 0;
   padding-bottom: 10px;
-  box-shadow: 0px 3px 4px var(--site-home-shadow);
-  // background-color: #d2e0cb;
-  background: linear-gradient(90deg, #779a74 1%, #78ad7b 1% 6%, #bac494 6% 11%, #d2e0cb 11% 89%, #bac494 89% 94%, #78ad7b 94% 99%, #779a74 99%);
+  box-shadow: 0px 3px 4px var(--shadow-01);
+  background: var(--banner-linear);
 }
 
 .main-title {
@@ -72,18 +56,18 @@
   padding-bottom: 0px;
   font-family: "Oswald", "Bookman Old Style", serif;
   font-size: 2.50rem;
-  border-bottom: 1px solid var(--site-home-title);
+  border-bottom: 1px solid var(--title-tc-01);
   letter-spacing: 0.12rem;
   width: max-content;
   margin: auto;
-  color: var(--site-home-title);
+  color: var(--title-tc-01);
 }
 
 .main-subtitle {
   font-family: Roboto, inherit "Merienda", sans-serif;
   font-weight: 400;
   font-size: .75rem;
-  color: var(--site-home-subtitle);
+  color: var(--subtitle-tc-01);
   letter-spacing: 0.100rem;
   margin: auto;
   width: max-content;

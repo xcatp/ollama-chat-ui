@@ -51,7 +51,7 @@ const displayFixedMenu = ref(false)
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-image: var(--site-body-img), var(--site-body-linear);
+  background-image: var(--bg-img-02), var(--linear-01);
 }
 
 .main-wrapper {
@@ -68,8 +68,8 @@ const displayFixedMenu = ref(false)
   z-index: 999;
   visibility: hidden;
   transition: all .1s linear;
-  background-color: var(--card-left-side-bgc);
-  box-shadow: 0 2px 4px var(--site-home-shadow);
+  background-color: var(--site-menu-bgc);
+  box-shadow: 0 2px 4px var(--shadow-02);
 }
 
 #menu-btn {

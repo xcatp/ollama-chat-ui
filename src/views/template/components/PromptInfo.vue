@@ -60,7 +60,7 @@ defineEmits(['submit', 'close'])
     color: #444c3f;
     outline: none;
     border: 1px solid #9cb294;
-    background-color: #e4ecdb;
+    background-color: var(--bgc-02);
     border-radius: 2px;
   }
 

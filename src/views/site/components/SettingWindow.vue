@@ -3,14 +3,20 @@
 import PopWindow from '@/components/PopWindow.vue';
 import { handleExportData, handleImportData, handleDeleteData } from '../helper'
 import { ref } from 'vue'
+import { useSiteStore } from '@/stores'
 
 defineProps(['condition'])
-defineEmits(['close'])
+defineEmits(['close', 'submit'])
 
 const importInput = ref(null)
 
 function handleImport() {
   importInput.value.click()
+}
+
+function switchTheme(t) {
+  useSiteStore().setTheme(t)
+  document.documentElement.dataset.theme = t
 }
 </script>
 
@@ -45,6 +51,12 @@ function handleImport() {
             </el-button>
           </template>
         </el-popconfirm>
+      </div>
+      <div class="label">Theme</div>
+      <div style="display: flex; gap: 10px;">
+        <SubmitBtn @click="switchTheme()">Spring</SubmitBtn>
+        <SubmitBtn @click="switchTheme('orange')">Orange</SubmitBtn>
+        <SubmitBtn @click="switchTheme('snow')">Snow</SubmitBtn>
       </div>
     </div>
     <div class="pop-window-footer">

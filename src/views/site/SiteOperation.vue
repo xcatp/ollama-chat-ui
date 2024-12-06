@@ -89,7 +89,8 @@ function tryFindActiveShard() {
 
 <template>
   <div class="view-container invisible-scrollbar">
-    <SettingWindow :condition="settingDialogVisible" @close="settingDialogVisible = false" />
+    <SettingWindow :condition="settingDialogVisible" @close="settingDialogVisible = false"
+      @submit="settingDialogVisible = false" />
     <RouterLink to="/" class="emboss">
       <div class="emboss-title">Ollama-Chat</div>
       <div class="emboss-subtitle">ui</div>
@@ -146,8 +147,8 @@ function tryFindActiveShard() {
   width: 220px;
   height: 100vh;
   overflow-y: auto;
-  background-color: var(--site-operation-bgc);
-  box-shadow: 0px 2px 6px rgba(60, 83, 54, 0.67);
+  background-color: var(--site-menu-bgc);
+  box-shadow: 0px 2px 6px var(--shadow-01);
   border-right: 1px solid var(--border-secondary);
 }
 
@@ -159,12 +160,12 @@ function tryFindActiveShard() {
   justify-content: center;
   align-items: center;
   gap: 4px;
-  background-image: var(--site-home-banner);
+  background-image: var(--bg-img-01);
 
 
   .emboss-title {
     font-weight: 500;
-    color: var(--site-home-title);
+    color: var(--title-tc-01);
     font-family: "Oswald", "Bookman Old Style", serif;
     font-size: 2rem;
     letter-spacing: 0.12rem;
@@ -174,7 +175,7 @@ function tryFindActiveShard() {
   .emboss-subtitle {
     font-weight: 100;
     font-size: 1em;
-    color: var(--site-home-subtitle);
+    color: var(--subtitle-tc-01);
   }
 
   &:hover {
@@ -214,7 +215,7 @@ function tryFindActiveShard() {
   }
 
   .open {
-    background: var(--linear-01) !important;
+    background: var(--linear-02) !important;
     border-bottom: 1px solid var(--border-secondary);
 
   }
@@ -283,7 +284,7 @@ function tryFindActiveShard() {
 
 .menu-empty {
   margin-left: 26px;
-  color: var(--side-item-tc);
+  color: var(--side-menu-item-tc);
   height: 100%;
   padding: .75rem 2px .75rem .5rem;
   margin-left: 23px;
@@ -303,7 +304,7 @@ function tryFindActiveShard() {
   line-height: 40px;
   margin-left: 23px;
   border-left: 1px solid rgb(12, 114, 12);
-  color: var(--side-item-tc);
+  color: var(--side-menu-item-tc);
 
   padding: 0 2px 0 .5rem;
   font-family: "Oswald", "Bookman Old Style";
@@ -327,13 +328,13 @@ function tryFindActiveShard() {
   font-weight: bold;
   text-decoration: underline 2px var(--text-02);
   color: var(--text-02);
-  background: var(--linear-01) !important;
+  background: var(--linear-02) !important;
 }
 
 .link-active {
   font-weight: bold;
-  color: #033b00;
-  background: var(--linear-02) !important;
+  color: var(--side-item-active-tc) !important;
+  background: var(--linear-03) !important;
 }
 
 .sidebar-bottom-fixed {
@@ -358,7 +359,7 @@ function tryFindActiveShard() {
       transition: background-color 0.15s linear;
 
       &:hover {
-        background-color: rgb(182, 210, 178);
+        background-color: var(--icon-hover-bgc);
       }
 
       &>div {

@@ -213,7 +213,7 @@ pre.hljs {
     width: 40px;
     text-align: center;
     letter-spacing: -1px;
-    border-right: 1px solid rgba(17, 108, 78, 0.66);
+    border-right: 1px solid var(--border-secondary);
     user-select: none;
     counter-reset: ln;
 
@@ -270,11 +270,11 @@ pre.hljs {
     mask-repeat: no-repeat;
     mask-position: center;
     display: inline-block;
-    background-color: #63c097;
+    background-color: var(--icon-bgc);
     transition: background-color .3s linear;
 
     &:hover {
-      background-color: #81ffcf;
+      background-color: var(--icon-hover-bgc);
     }
   }
 

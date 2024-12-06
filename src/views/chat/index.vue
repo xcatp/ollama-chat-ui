@@ -67,7 +67,7 @@ async function SubmitChat() {
   const history = getChatHistory(chatHistory.value, chatHistory.value.length)
   addUserChat(userMsg)
   addEmptyBotChat()
-  scrollToBottom()
+  scrollToBottom(true)
   _chat(userMsg, -1, history)
 }
 
@@ -126,7 +126,7 @@ function _chat(userMsg, idx, history) {
     }).catch(error => {
       thinkingDone()
       if (error.name === 'AbortError') {
-        chatHistory.value.at(idx).text = '[Request have been aborted.]'
+        chatHistory.value.at(idx).text += '[Request have been aborted.]'
       } else {
         chatHistory.value.at(idx).text = '[Request failed.]'
       }
@@ -261,16 +261,6 @@ function inputKeyDown(e) {
 }
 
 .header-panel {
-  position: sticky;
-  top: 0px;
-  background: #e5ecde;
-  box-shadow: 0px 0px 6px rgba(60, 83, 54, 0.67);
-  padding: 0 1em;
-  height: 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 80;
 
   .title {
     font-size: 1.5rem;
@@ -290,7 +280,6 @@ function inputKeyDown(e) {
 .main-panel {
   flex: 1;
   display: flex;
-  background-color: rgb(235, 242, 232);
   overflow-y: auto;
 
   .empty-panel {
@@ -314,6 +303,7 @@ function inputKeyDown(e) {
   overflow: auto;
   display: flex;
   flex-direction: column;
+  background-color: var(--chat-left-panel-bgc);
 
   .model-info {
     flex: 1;
@@ -347,7 +337,7 @@ function inputKeyDown(e) {
   display: flex;
   flex-direction: column;
   border-left: 1px solid var(--border-secondary);
-  background-color: #ebede4;
+  background-color: var(--chat-panel-bgc);
 
   .chat-input {
     position: relative;
@@ -361,8 +351,8 @@ function inputKeyDown(e) {
     .edit-input {
       width: 100%;
       max-height: 100%;
-      background: #eaefe3;
-      color: inherit;
+      background: var(--chat-input-bgc);
+      color: var(--text-02);
       outline: none;
       border: none;
       resize: none;
@@ -430,7 +420,7 @@ function inputKeyDown(e) {
 
     .msg-content {
       background-color: var(--chat-bot-msg-bgc);
-      box-shadow: 0px 2px 4px rgba(52, 71, 47, 0.188);
+      box-shadow: 0px 1px 4px rgba(65, 65, 65, 0.339);
       padding: .5em .6em;
       border-radius: 5px;
     }

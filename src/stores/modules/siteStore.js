@@ -6,6 +6,7 @@ export const useSiteStore = defineStore('site', () => {
   const siteState = ref({
     activeAgentId: local.getItem('activeAgentId') || '',
     ChatBarW: local.getItem('chatBarW') || 220,
+    theme: local.getItem('theme') || '',
   })
 
   const setState = (key, val) => siteState.value[key] = val
@@ -13,6 +14,11 @@ export const useSiteStore = defineStore('site', () => {
   const setChatBarW = function (w) {
     setState('ChatBarW', w)
     local.setItem('chatBarW', w)
+  }
+
+  const setTheme = function (t) {
+    setState('theme', t)
+    local.setItem('theme', t)
   }
 
   const setActiveAgentId = function (id) {
@@ -31,6 +37,7 @@ export const useSiteStore = defineStore('site', () => {
     siteState,
     setChatBarW,
     setActiveAgentId,
+    setTheme,
     _reset
   }
 })

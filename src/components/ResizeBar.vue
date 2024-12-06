@@ -79,7 +79,6 @@ function registerResizeEvent() {
   width: 0;
 
   .icon-resize-btn {
-    background-color: #75972b;
     z-index: 1;
     position: absolute;
     margin: 0;

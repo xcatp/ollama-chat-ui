@@ -1,11 +1,12 @@
-@import './theme-light.css';
+@import './theme-spring.css';
+@import './theme-orange.css';
+@import './theme-snow.css';
 @import './reset.css';
 @import './md.scss';
 @import './el-fix.scss';
 
 html {
-  /* filter: invert(0) hue-rotate(150deg); */
-  /* filter:grayscale(.3); */
+  /* filter: hue-rotate(60deg); */
 }
 
 .icon {
@@ -29,4 +30,20 @@ html {
 .invisible {
   visibility: hidden;
   opacity: 0;
+}
+
+.header-panel {
+  position: sticky;
+  top: 0px;
+  background: var(--view-bgc-01);
+  box-shadow: 0px 0px 6px var(--shadow-01);
+  padding: 0 1em;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 2rem;
+  z-index: 80;
 }

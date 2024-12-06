@@ -1,6 +1,7 @@
 <!--  -->
 <script setup>
 import PopWindow from '@/components/PopWindow.vue'
+import SimpleInput from '@/components/SimpleInput.vue';
 defineProps(['form', 'models', 'prompts', 'condition'])
 defineEmits(['close', 'submit'])
 </script>

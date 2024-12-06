@@ -58,23 +58,6 @@ onMounted(async () => {
   flex-direction: column;
 }
 
-.header-panel {
-  position: sticky;
-  top: 0px;
-  background: #e5ecde;
-  box-shadow: 0px 0px 6px rgba(60, 83, 54, 0.67);
-  padding-left: 1em;
-  height: 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 2rem;
-  z-index: 80;
-}
-
-
 .main-panel {
   flex: 1;
   display: flex;
@@ -82,8 +65,8 @@ onMounted(async () => {
   margin: 5px;
   padding: 5px;
   border: 1px solid var(--border-primary);
-  box-shadow: 0px 3px 4px var(--site-home-shadow);
-  background-color: var(--view-category-bgc);
+  box-shadow: 0px 3px 4px var(--shadow-02);
+  background-color: var(--view-bgc-02);
 }
 
 .data-table {
@@ -92,7 +75,7 @@ onMounted(async () => {
   }
 
   .id-col {
-    background-color: var(--background-secondary) !important;
+    background-color: var(--bgc-secondary) !important;
   }
 }
 </style>

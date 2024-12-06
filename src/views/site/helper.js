@@ -32,6 +32,7 @@ export function handleImportData(e) {
     const siteStore = useSiteStore()
     siteStore.setActiveAgentId(data.siteData.activeAgentId)
     siteStore.setChatBarW(data.siteData.ChatBarW)
+    siteStore.setTheme(data.siteData.theme)
     //
     local.setItem('agents', JSON.stringify(data.agentData.agents))
     const agentStore = useAgentStore()

@@ -48,7 +48,7 @@ defineProps({ condition: Boolean })
   min-height: 400px;
   max-width: 80%;
   max-height: 80%;
-  background-color: #edf5e7;
+  background-color: var(--view-bgc-01 );
   box-shadow: 0px 0px 6px rgba(54, 83, 56, 0.297);
   transition: all 0.1s ease-out;
 }
@@ -58,7 +58,6 @@ defineProps({ condition: Boolean })
   top: 10px;
   right: 10px;
   cursor: pointer;
-  background-color: var(--color-blue);
   mask-image: url('/static/svg/cancel.svg');
 
   &:hover {
