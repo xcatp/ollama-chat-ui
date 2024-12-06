@@ -30,6 +30,7 @@ const chatHistory = useChatHistory(agentInfo.value?.id)
 const { prompt } = useTemplateInfo(agentInfo.value?.agentPersona)
 const { scrollRef, scrollToBottom } = useScroll()
 const detailWindowVisible = ref(null)
+const importInput = ref(null)
 
 useEvent()
 
@@ -163,10 +164,40 @@ function clearChatHistory(e) {
 }
 
 function inputKeyDown(e) {
-  if (e.keyCode === 13 && !e.shiftKey) {
+  if (e.keyCode === 13 && e.shiftKey) {
     e.preventDefault()
     SubmitChat()
   }
+}
+
+function exportChatData() {
+  const data = {}
+  data.chatData = chatHistory.value
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = 'chatHistory.json'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+
+function importChatData(e) {
+  const target = e.target
+  if (!target || !target.files) return
+  const file = target.files[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = function (e) {
+    const data = JSON.parse(e.target.result)
+    data.chatData.forEach(item => chatStore.addChat(agentInfo.value.id, item))
+  }
+  reader.readAsText(file)
+  ElMessage({
+    message: 'Imported!',
+    type: 'success'
+  })
 }
 </script>
 
@@ -217,6 +248,9 @@ function inputKeyDown(e) {
               <el-button type="danger" size="small" @click="clearChatHistory(confirm)">Yes</el-button>
             </template>
           </el-popconfirm>
+          <input ref="importInput" type="file" style="display:none" @change="importChatData">
+          <div class="icon icon-export" title="Export chat history" @click="exportChatData"></div>
+          <div class="icon icon-import" title="Import chat history" @click="importInput.click()"></div>
         </div>
         <ResizeBar :min="0" @end="(w) => siteStore.setChatBarW(w)"></ResizeBar>
       </div>
@@ -228,7 +262,8 @@ function inputKeyDown(e) {
               <div class="timestamp">{{ moment(v.timestamp).format('YYYY-MM-DD HH:mm:ss') }}</div>
             </div>
             <div class="msg-container">
-              <div class="msg-content" v-html="render(v.text)"></div>
+              <div v-if="v.inversion" class="msg-content" v-html="render(v.text)"></div>
+              <div v-else class="msg-content">{{ v.text }}</div>
               <div class="msg-operation">
                 <div v-if="v.inversion" title="Refresh" @click="reGenerate(i)" class="icon icon-refresh"></div>
                 <HoverMenu>
@@ -244,7 +279,7 @@ function inputKeyDown(e) {
         <div class="chat-input">
           <ResizeBar :with-after="false" position="top" :min="60"></ResizeBar>
           <textarea class="edit-input" @keydown="inputKeyDown" v-model="input"
-            placeholder="Type your message"></textarea>
+            placeholder="Type your message, Shift + Enter to send, Enter for a new line"></textarea>
           <SubmitBtn :onclick="SubmitChat" class="submit-btn">Send</SubmitBtn>
           <SubmitBtn v-if="sending" class="stop-btn" @click="abort">Stop</SubmitBtn>
         </div>
@@ -305,6 +340,12 @@ function inputKeyDown(e) {
   flex-direction: column;
   background-color: var(--chat-left-panel-bgc);
 
+  .left-panel-footer {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
   .model-info {
     flex: 1;
     display: flex;
@@ -352,7 +393,7 @@ function inputKeyDown(e) {
       width: 100%;
       max-height: 100%;
       background: var(--chat-input-bgc);
-      color: var(--text-02);
+      color: var(--title-tc-01);
       outline: none;
       border: none;
       resize: none;
@@ -400,6 +441,7 @@ function inputKeyDown(e) {
     }
 
     .msg-content {
+      white-space: break-spaces;
       background-color: var(--chat-usr-msg-bgc) !important;
     }
   }
@@ -454,11 +496,6 @@ function inputKeyDown(e) {
 
 .icon-pen {
   mask-image: url('/static/svg/pen.svg');
-  background-color: #748059;
-
-  &:hover {
-    background-color: rgb(0, 56, 7);
-  }
 }
 
 .icon-refresh {
@@ -466,19 +503,30 @@ function inputKeyDown(e) {
   height: 10px;
   margin: 0 5px;
   mask-image: url('/static/svg/refresh.svg');
-
-  &:hover {
-    background-color: rgb(0, 53, 7);
-  }
 }
 
 .icon-clear {
   margin: 0;
-  background-color: #748059;
   mask-image: url('/static/svg/clear.svg');
+}
 
+.icon-export {
+  margin: 0;
+  mask-image: url('/static/svg/export.svg');
+}
+
+.icon-import {
+  margin: 0;
+  mask-image: url('/static/svg/import.svg');
+}
+
+.icon-pen,
+.icon-refresh,
+.icon-clear,
+.icon-export,
+.icon-import {
   &:hover {
-    background-color: rgb(0, 53, 7);
+    background-color: rgb(57, 58, 57);
   }
 }
 </style>
