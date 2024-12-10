@@ -64,8 +64,8 @@
   --linear-02: linear-gradient(90deg, #e0ebd5 0.00%, #b0d5ac 20.00%, #e0ebd5 100.00%);
   --linear-03: linear-gradient(90deg, #d6ebd5 0.00%, #8cdaa2 100.00%);
 
-  --banner-linear: linear-gradient(90deg, #9a9274 1%, #ada178 1% 6%, #c4c294 6% 11%,
-      #dfe0cb 11% 89%, #c4c294 89% 94%, #ada178 94% 99%, #9a9274 99%);
+  --banner-linear: linear-gradient(90deg, #779a74 1%, #78ad7b 1% 6%, #bac494 6% 11%,
+      #d2e0cb 11% 89%, #bac494 89% 94%, #78ad7b 94% 99%, #779a74 99%);
 
   --chat-bot-msg-bgc: #f4f6ea;
   --chat-usr-msg-bgc: #f0f6ea;
