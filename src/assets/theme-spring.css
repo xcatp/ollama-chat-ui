@@ -27,15 +27,8 @@
   /* icon */
   --icon-bgc: #628C4F;
   --icon-hover-bgc: #b6d2b2;
-  /* colors */
-  --color-orange: #e8a644;
-  --color-green: #008a00;
-  --color-blue: #003a8a;
-  --color-red: #8a0000;
-  --color-yellow: #e8a644;
-  --color-purple: #8a008a;
   /* code */
-  --bgc-pre: #1D2021;
+  --bgc-pre: #2c2d2e;
   --bgc-code: #ccdec9;
   --text-code: #EBDBA4;
   /* menu bar */
@@ -71,7 +64,7 @@
   --chat-usr-msg-bgc: #f0f6ea;
   --chat-left-panel-bgc: #f6f9ee;
   --chat-panel-bgc: #f6f9ee;
-  --chat-input-bgc: #eaefe3;
+  --chat-input-bgc: #f2f4ec;
 }
 
 ::-webkit-scrollbar {

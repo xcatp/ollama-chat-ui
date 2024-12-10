@@ -338,6 +338,7 @@ function importChatData(e) {
   display: flex;
   flex-direction: column;
   background-color: var(--chat-left-panel-bgc);
+  z-index: 10;
 
   .left-panel-footer {
     display: flex;
@@ -383,7 +384,7 @@ function importChatData(e) {
     position: relative;
     padding: 0;
     background-color: #eaefe3;
-    box-shadow: 0px -2px 4px rgba(52, 71, 47, 0.188);
+    box-shadow: -1px -2px 4px rgba(52, 71, 47, 0.188);
     min-height: 60px;
     display: flex;
     font-family: "PT Serif", serif;

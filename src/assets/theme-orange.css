@@ -12,31 +12,24 @@ html[data-theme='orange'] {
   --text-link-hover: #0055aa;
   --text-visited: #551a8b;
   /* bgc */
-  --bgc-primary: #eaebe3;
-  --bgc-secondary: #e9e3da;
+  --bgc-primary: #ebe8e3;
+  --bgc-secondary: #f1e7d8;
   --bgc-tertiary: #d2e1e2;
-  --bgc-01: #c5beac;
-  --bgc-02: #efece0;
-  --bgc-03: #f5f3e7;
-  --bgc-04: #ece9dc;
-  --btn-bgc: #e2dbc5;
-  --btn-hover: #d9c3a9;
-  --btn-active: #c4c096;
+  --bgc-01: #E3D6A9;
+  --bgc-02: #f2eede;
+  --bgc-03: #f5f1e7;
+  --bgc-04: #f1eadb;
+  --btn-bgc: #ece5cf;
+  --btn-hover: #e8d8c6;
+  --btn-active: #e4ccaf;
   /* border */
   --border-primary: #c6bba1;
   --border-secondary: #9e917e;
   /* icon */
   --icon-bgc: #976a2b;
   --icon-hover-bgc: #d2c9b2;
-  /* colors */
-  --color-orange: #e8a644;
-  --color-green: #008a00;
-  --color-blue: #003a8a;
-  --color-red: #8a0000;
-  --color-yellow: #e8a644;
-  --color-purple: #8a008a;
   /* code */
-  --bgc-pre: #21201d;
+  --bgc-pre: #2c2d2e;
   --bgc-code: #ebe7dd;
   --text-code: #EBDBA4;
   /* menu bar */
@@ -51,7 +44,7 @@ html[data-theme='orange'] {
   --subtitle-tc-01: #423600;
 
   --view-bgc-01: #ebe8d6;
-  --view-bgc-02: #efede7;
+  --view-bgc-02: #eee9dd;
   --view-bgc-03: #79683a8d;
 
   --shadow-01: #3b2e0181;
@@ -62,17 +55,17 @@ html[data-theme='orange'] {
   --bg-img-02: url('/static/svg/site-bg.svg');
 
   --linear-01: linear-gradient(270deg, #ac9d84 0%, #dedcbf 50%, #ac9d84 100%);
-  --linear-02: linear-gradient(90deg, #ebe7d5 0.00%, #dac48c 100.00%);
-  --linear-03: linear-gradient(132deg, #ebe7d5 0.00%, #c27f338e 100.00%);
+  --linear-02: linear-gradient(90deg, #ebe2d5 0.00%, #E3D6A9 20.00%, #ebe5d5 100.00%);
+  --linear-03: linear-gradient(132deg, #ebe7d5 0.00%, #E3D6A9 100.00%);
 
   --banner-linear: linear-gradient(90deg, #9a9274 1%, #ada178 1% 6%, #c4c294 6% 11%,
       #dfe0cb 11% 89%, #c4c294 89% 94%, #ada178 94% 99%, #9a9274 99%);
 
   --chat-bot-msg-bgc: #f6f3ea;
   --chat-usr-msg-bgc: #f2f6ea;
-  --chat-left-panel-bgc: #f4f0e7;
+  --chat-left-panel-bgc: #f2eddf;
   --chat-panel-bgc: #f9f7ee;
-  --chat-input-bgc: #f0ece4;
+  --chat-input-bgc: #f3efe3;
 }
 
 ::-webkit-scrollbar {

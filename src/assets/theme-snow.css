@@ -19,18 +19,11 @@ html[data-theme='snow'] {
   --btn-hover: #e3e3e3;
   --btn-active: #c3c3c3;
   /* border */
-  --border-primary: #c5c5c5;
-  --border-secondary: #9c9c9c;
+  --border-primary: #dbdbdb;
+  --border-secondary: #bbbbbb95;
   /* icon */
   --icon-bgc: #949494;
   --icon-hover-bgc: #d3d3d3;
-  /* colors */
-  --color-orange: #e8a644;
-  --color-green: #008a00;
-  --color-blue: #003a8a;
-  --color-red: #8a0000;
-  --color-yellow: #e8a644;
-  --color-purple: #8a008a;
   /* code */
   --bgc-pre: #1D2021;
   --bgc-code: #eaeaea;
@@ -49,7 +42,7 @@ html[data-theme='snow'] {
   --view-bgc-01: #FFFFFF;
   --view-bgc-02: #FFFFFF;
 
-  --shadow-01: #32323281;
+  --shadow-01: #32323243;
   --shadow-02: #656565ab;
   --shadow-03: #3f3f3f88;
 
@@ -63,8 +56,8 @@ html[data-theme='snow'] {
   --banner-linear: linear-gradient(90deg, #9a9a9a 1%, #acacac 1% 6%, #c6c6c6 6% 11%,
       #e2e2e2 11% 89%, #c6c6c6 89% 94%, #acacac 94% 99%, #9a9a9a 99%);
 
-  --chat-bot-msg-bgc: #f8f8f8;
-  --chat-usr-msg-bgc: #f7f7f7;
+  --chat-bot-msg-bgc: #fdfdfd;
+  --chat-usr-msg-bgc: #fdfdfd;
   --chat-left-panel-bgc: #ffffff;
   --chat-panel-bgc: #FFFFFF;
   --chat-input-bgc: #ffffff;
