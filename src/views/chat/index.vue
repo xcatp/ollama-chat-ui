@@ -32,13 +32,12 @@ const { scrollRef, scrollToBottom } = useScroll()
 const detailWindowVisible = ref(null)
 const importInput = ref(null)
 
-useEvent()
-
 onMounted(async () => {
   if (agentInfo.value) {
     await nextTick()
     leftPanel.value.style.width = local.getItem('chatBarW')
     scrollToBottom()
+    useEvent()
   }
 })
 
