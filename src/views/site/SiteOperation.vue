@@ -144,7 +144,7 @@ function tryFindActiveShard() {
   flex-direction: column;
   position: sticky;
   top: 0;
-  width: 220px;
+  width: 210px;
   height: 100vh;
   overflow-y: auto;
   background-color: var(--site-menu-bgc);

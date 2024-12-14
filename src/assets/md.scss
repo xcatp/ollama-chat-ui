@@ -99,9 +99,7 @@ $pfx : #009152;
 }
 
 .x-em,
-.x-strong {
-  
-}
+.x-strong {}
 
 .x-ul,
 .x-ol {
@@ -155,27 +153,10 @@ $pfx : #009152;
 }
 
 .x-hr {
-  width: 80%;
-  margin: 15px auto;
   border: 0;
-  color: #73827a;
-  background: linear-gradient(currentColor, currentColor) no-repeat center;
-  background-size: calc(100% - 1.5em - 6px) 1px;
-  display: flex;
-  justify-content: space-between;
-
-  &::before,
-  &::after {
-    content: '';
-    background-color: #5f866f86;
-    display: block;
-    width: .75em;
-    height: .75em;
-    transform: rotate(45deg);
-    box-sizing: border-box;
-    border: 1px solid;
-    margin: 3px;
-  }
+  padding: 3px;
+  margin: 1em;
+  background: repeating-linear-gradient(135deg, #a2a9b6 0px, #a2a9b6 1px, transparent 1px, transparent 6px);
 }
 
 .x-img {
