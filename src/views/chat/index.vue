@@ -31,11 +31,12 @@ const { prompt } = useTemplateInfo(agentInfo.value?.agentPersona)
 const { scrollRef, scrollToBottom } = useScroll()
 const detailWindowVisible = ref(null)
 const importInput = ref(null)
+const autoScrollSwitch = ref(siteStore.siteState.autoScroll)
 
 onMounted(async () => {
   if (agentInfo.value) {
     await nextTick()
-    leftPanel.value.style.width = local.getItem('chatBarW')
+    leftPanel.value.style.width = siteStore.siteState.chatBarW
     scrollToBottom()
     useEvent()
   }
@@ -119,6 +120,7 @@ function _chat(userMsg, idx, history) {
       thinkingDone()
       for await (const part of stream) {
         chatHistory.value.at(idx).text += part.message.content
+        autoScrollSwitch.value && scrollToBottom(true)
       }
       chatStore.updateChat(agentInfo.value.id)
       sending.value = false
@@ -198,6 +200,11 @@ function importChatData(e) {
     type: 'success'
   })
 }
+
+function switchAutoScroll() {
+  autoScrollSwitch.value = !autoScrollSwitch.value
+  siteStore.setAutoScroll(autoScrollSwitch.value)
+}
 </script>
 
 <template>
@@ -238,18 +245,22 @@ function importChatData(e) {
           </div>
         </div>
         <div class="left-panel-footer">
-          <el-popconfirm width="220" :hide-after="0" :hide-icon="true" title="Clear chat history?">
-            <template #reference>
-              <div class="icon icon-clear" title="Clear chat history"></div>
-            </template>
-            <template #actions="{ cancel, confirm }">
-              <el-button size="small" @click="cancel">No</el-button>
-              <el-button type="danger" size="small" @click="clearChatHistory(confirm)">Yes</el-button>
-            </template>
-          </el-popconfirm>
-          <input ref="importInput" type="file" style="display:none" @change="importChatData">
-          <div class="icon icon-export" title="Export chat history" @click="exportChatData"></div>
-          <div class="icon icon-import" title="Import chat history" @click="importInput.click()"></div>
+          <div class="ops">
+            <el-popconfirm width="220" :hide-after="0" :hide-icon="true" title="Clear chat history?">
+              <template #reference>
+                <div class="icon icon-clear" title="Clear chat history"></div>
+              </template>
+              <template #actions="{ cancel, confirm }">
+                <el-button size="small" @click="cancel">No</el-button>
+                <el-button type="danger" size="small" @click="clearChatHistory(confirm)">Yes</el-button>
+              </template>
+            </el-popconfirm>
+            <input ref="importInput" type="file" style="display:none" @change="importChatData">
+            <div class="icon icon-export" title="Export chat history" @click="exportChatData"></div>
+            <div class="icon icon-import" title="Import chat history" @click="importInput.click()"></div>
+            <div class="icon icon-scroll" title="Auto scroll" @click="switchAutoScroll"
+              :class="{ 'red': autoScrollSwitch }"></div>
+          </div>
         </div>
         <ResizeBar :min="0" @end="(w) => siteStore.setChatBarW(w)"></ResizeBar>
       </div>
@@ -315,6 +326,7 @@ function importChatData(e) {
   flex: 1;
   display: flex;
   overflow-y: auto;
+  background-color: var(--chat-panel-bgc);
 
   .empty-panel {
     flex: 1;
@@ -341,9 +353,12 @@ function importChatData(e) {
   z-index: 10;
 
   .left-panel-footer {
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px;
+
+    .ops {
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+    }
   }
 
   .model-info {
@@ -378,7 +393,6 @@ function importChatData(e) {
   display: flex;
   flex-direction: column;
   border-left: 1px solid var(--border-secondary);
-  background-color: var(--chat-panel-bgc);
 
   .chat-input {
     position: relative;
@@ -520,11 +534,22 @@ function importChatData(e) {
   mask-image: url('/static/svg/import.svg');
 }
 
+.icon-scroll {
+  margin: 0;
+  mask-image: url('/static/svg/scroll.svg');
+}
+
+.red {
+  background-color: red !important;
+  color: red !important;
+}
+
 .icon-pen,
 .icon-refresh,
 .icon-clear,
 .icon-export,
-.icon-import {
+.icon-import,
+.icon-scroll {
   &:hover {
     background-color: rgb(57, 58, 57);
   }

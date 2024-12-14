@@ -4,33 +4,36 @@ import { local } from '@/utils/storage'
 
 export const useSiteStore = defineStore('site', () => {
   const siteState = ref({
-    activeAgentId: local.getItem('activeAgentId') || '',
-    ChatBarW: local.getItem('chatBarW') || 220,
-    theme: local.getItem('theme') || '',
+    activeAgentId: '',
+    chatBarW: '220px',
+    theme: '',
+    autoScroll: false,
   })
 
-  const setState = (key, val) => siteState.value[key] = val
+  _init()
 
-  const setChatBarW = function (w) {
-    setState('ChatBarW', w)
-    local.setItem('chatBarW', w)
-  }
+  const setState = (key, val) => (siteState.value[key] = val, _recordState())
 
-  const setTheme = function (t) {
-    setState('theme', t)
-    local.setItem('theme', t)
-  }
-
-  const setActiveAgentId = function (id) {
-    setState('activeAgentId', id)
-    local.setItem('activeAgentId', id)
-  }
+  const setChatBarW = w => setState('chatBarW', w)
+  const setTheme = theme => setState('theme', theme)
+  const setActiveAgentId = id => setState('activeAgentId', id)
+  const setAutoScroll = autoScroll => setState('autoScroll', autoScroll)
 
   const _reset = () => {
     siteState.value.activeAgentId = ''
-    local.delItem('activeAgentId')
-    siteState.value.ChatBarW = 220
-    local.delItem('chatBarW')
+    siteState.value.chatBarW = '220px'
+    siteState.value.theme = ''
+    siteState.value.autoScroll = false
+    local.delItem('siteState')
+  }
+
+  function _init() {
+    const state = JSON.parse(local.getItem('siteState'))
+    if (state) Object.assign(siteState.value, state)
+  }
+
+  function _recordState() {
+    local.setItem('siteState', JSON.stringify(siteState.value))
   }
 
   return {
@@ -38,6 +41,7 @@ export const useSiteStore = defineStore('site', () => {
     setChatBarW,
     setActiveAgentId,
     setTheme,
+    setAutoScroll,
     _reset
   }
 })
