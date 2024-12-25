@@ -23,7 +23,6 @@ const chatStore = useChatStore()
 const agentStore = useAgentStore()
 const siteStore = useSiteStore()
 const leftPanel = ref(null)
-const thinking = ref(false)
 const sending = ref(false)
 const agentInfo = useActiveAgentInfo()
 const chatHistory = useChatHistory(agentInfo.value?.id)
@@ -75,12 +74,14 @@ async function SubmitChat() {
 function reGenerate(idx) {
   if (sending.value || idx < 1)
     return
+  sending.value = true
   const userChat = chatHistory.value[idx - 1]
   if (userChat.inversion) {
     ElMessage({
       message: 'Chat has been deleted.',
       type: 'warning',
     })
+    sending.value = false
     return
   }
   const history = getChatHistory(chatHistory.value, idx)
@@ -100,7 +101,6 @@ function delChat(idx) {
 function botThinking(idx) {
   const thinkingText = ['⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏', '⠋', '⠙', '⠹']
   let i = 0
-  thinking.value = true
   const loadingInterval = setInterval(() => {
     chatHistory.value.at(idx).text = thinkingText[i]
     i = (i + 1) % thinkingText.length
@@ -108,7 +108,6 @@ function botThinking(idx) {
   return () => {
     clearInterval(loadingInterval)
     chatHistory.value.at(idx).text = ''
-    thinking.value = false
   }
 }
 
@@ -126,9 +125,10 @@ function _chat(userMsg, idx, history) {
       sending.value = false
       useEvent()
     }).catch(error => {
+      const generatedText = chatHistory.value.at(idx).text
       thinkingDone()
       if (error.name === 'AbortError') {
-        chatHistory.value.at(idx).text += '[Request have been aborted.]'
+        chatHistory.value.at(idx).text += generatedText + '[Request have been aborted.]'
       } else {
         chatHistory.value.at(idx).text = '[Request failed.]'
       }

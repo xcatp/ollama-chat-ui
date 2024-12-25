@@ -1,9 +1,10 @@
 // import moment from "moment"
 
 // function getChatHistoryDayStrategy(chatHistory, idx) {
+//   // 当天
 //   const today = moment().startOf('day')
 //   const filtered = []
-//   for (let i = idx; i >= 0; i--) {
+//   for (let i = idx - 1; i >= 0; i--) {
 //     if (moment(chatHistory[i].timestamp).startOf('day').isBefore(today)) break
 //     filtered.push({
 //       role: chatHistory[i].inversion ? 'assistant' : 'user',
@@ -15,7 +16,8 @@
 // }
 
 function getChatHistoryRecentStrategy(chatHistory, idx) {
-  return chatHistory.slice(idx - 20, idx).map(v => ({
+  // 最近20条
+  return chatHistory.slice((idx - 20 || 0), idx).map(v => ({
     role: v.inversion ? 'assistant' : 'user',
     content: v.text,
   }))
