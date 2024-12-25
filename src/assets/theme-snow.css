@@ -22,8 +22,9 @@ html[data-theme='snow'] {
   --border-primary: #dbdbdb;
   --border-secondary: #bbbbbb95;
   /* icon */
-  --icon-bgc: #949494;
+  --icon-bgc: #8fa0ab;
   --icon-hover-bgc: #d3d3d3;
+  --icon-ctn-hover-bgc: #d3d3d3;
   /* code */
   --bgc-pre: #1D2021;
   --bgc-code: #eaeaea;

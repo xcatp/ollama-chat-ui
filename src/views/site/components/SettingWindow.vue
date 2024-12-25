@@ -60,7 +60,7 @@ function switchTheme(t) {
       </div>
     </div>
     <div class="pop-window-footer">
-      <SubmitBtn @click="$emit('submit')">Done</SubmitBtn>
+      <!-- <SubmitBtn @click="$emit('submit')">Done</SubmitBtn> -->
     </div>
   </PopWindow>
 </template>

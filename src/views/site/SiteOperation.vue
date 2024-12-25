@@ -359,7 +359,7 @@ function tryFindActiveShard() {
       transition: background-color 0.15s linear;
 
       &:hover {
-        background-color: var(--icon-hover-bgc);
+        background-color: var(--icon-ctn-hover-bgc);
       }
 
       &>div {

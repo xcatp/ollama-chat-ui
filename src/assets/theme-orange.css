@@ -28,6 +28,7 @@ html[data-theme='orange'] {
   /* icon */
   --icon-bgc: #976a2b;
   --icon-hover-bgc: #d2c9b2;
+  --icon-ctn-hover-bgc: #d2c9b2;
   /* code */
   --bgc-pre: #2c2d2e;
   --bgc-code: #ebe7dd;
