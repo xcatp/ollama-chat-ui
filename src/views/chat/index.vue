@@ -205,6 +205,20 @@ function switchAutoScroll() {
   autoScrollSwitch.value = !autoScrollSwitch.value
   siteStore.setAutoScroll(autoScrollSwitch.value)
 }
+
+function scroll2Ask(e) {
+  const prevElement = e.target.previousElementSibling
+  if (prevElement) {
+    scrollRef.value.scrollTo({ top: prevElement.offsetTop - 150, behavior: 'smooth' })
+  }
+}
+
+function scroll2Answer(e) {
+  const prevElement = e.target.nextElementSibling
+  if (prevElement) {
+    scrollRef.value.scrollTo({ top: prevElement.offsetTop - 500, behavior: 'smooth' })
+  }
+}
 </script>
 
 <template>
@@ -272,6 +286,10 @@ function switchAutoScroll() {
               <div class="timestamp">{{ moment(v.timestamp).format('YYYY-MM-DD HH:mm:ss') }}</div>
             </div>
             <div class="msg-container">
+              <div v-if="v.inversion" class="fast-op">
+                <div class="icon icon-arrow" style="transform: rotate(180deg)" @click="scroll2Answer"></div>
+                <div class="icon icon-arrow" @click="scroll2Ask"></div>
+              </div>
               <div v-if="v.inversion" class="msg-content" v-html="render(v.text)"></div>
               <div v-else class="msg-content">{{ v.text }}</div>
               <div class="msg-operation">
@@ -474,6 +492,20 @@ function switchAutoScroll() {
     display: flex;
     margin: 0 25px;
 
+    .fast-op {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      opacity: 0;
+      transition: opacity .3s ease-out;
+
+      &:hover {
+        opacity: 1;
+
+      }
+    }
+
     .msg-content {
       background-color: var(--chat-bot-msg-bgc);
       box-shadow: 0px 1px 4px rgba(65, 65, 65, 0.339);
@@ -539,6 +571,11 @@ function switchAutoScroll() {
   mask-image: url('/static/svg/scroll.svg');
 }
 
+.icon-arrow {
+  margin: 0;
+  mask-image: url('/static/svg/arrow.svg');
+}
+
 .red {
   background-color: red !important;
   color: red !important;
@@ -549,7 +586,10 @@ function switchAutoScroll() {
 .icon-clear,
 .icon-export,
 .icon-import,
-.icon-scroll {
+.icon-scroll,
+.icon-arrow {
+  cursor: pointer;
+  
   &:hover {
     background-color: rgb(57, 58, 57);
   }
